@@ -18,29 +18,6 @@ trainDataSimonHip = "Simon_001_left hip_020097_2015-03-10 17-54-46.bin"
 # clean the data training data
 data=read.bin(trainDataPeterWrist)
 
-startTime = 1425917535
-endTime = 1427017535
-
-# extract given timestamps
-startIndex = -1
-endIndex = -1
-startFound = FALSE
-
-# attempt to return index of datapoints based on start and end timestamp
-for (i in 1:nrow(data$data.out)) {
-  if (!startFound) {
-    if (data$data.out[i] > startTime) {
-      startIndex = i
-      startFound = TRUE
-    }
-  } else {
-    if (data$data.out[i] > endTime) {
-      endIndex = i - 1
-      break
-    }
-  }
-}
-
 # number of seconds for the output
 SPLIT_INTERVAL=5
 # sampling frequency
@@ -62,24 +39,18 @@ Sys.time()
 
 # read data
 data=read.bin(datafile)
-dataHip=read.bin(datafileHip)
-dataWrist=read.bin(datafileWrist)
-# fist timestamp
-as.POSIXct(data$data.out[1,1], origin="1970-01-01")
-# last timestamp
-as.POSIXct(data$data.out[nrow(data$data.out),1], origin="1970-01-01")
 
 # calculate statistical summaries for every splitInterval
-as.POSIXct(data$data.out[490000,1], origin="1970-01-01")
-
+# (manually input start and end index)
 dataSnippet=data$data.out[17190000:17460000,]
+
 counter=1
 max_interval=SPLIT_INTERVAL * FREQUENCY
 frameCount = floor(nrow(dataSnippet)/max_interval)
+# statistical summaries data folder
 tempED = rep(NA, frameCount)
 boundaryConstant = sqrt(3 * SET_BOUNDARY*SET_BOUNDARY)
 
-Sys.time()
 # vectorized ED calc
 for (i in 1:frameCount) {
   startIndex = 1 + max_interval * (i - 1)
@@ -89,32 +60,21 @@ for (i in 1:frameCount) {
   tempED[i] = mean(sqrt(tempDF[,2]*tempDF[,2] + tempDF[,3]*tempDF[,3] + tempDF[,4]*tempDF[,4]) / 
                      boundaryConstant)
 }
-Sys.time()
 
+# plot summary
 plot(tempED[128:250], xlab = "Time", ylab="Intensity", type="l", main="Peter train wrist")
+# save it to the file
 write.csv(data.frame(intensity=tempED[90:128],activity="1"), 
           "010_wrist_walking_suitcase.csv", row.names=FALSE)
 
-abline(v=49, col=2)
-abline(v=99, col=2)
-text(20, 0.09, "walk - no resistance", cex = .8, col=2)
-text(70, 0.09, "walk - suitcase", cex = .8, col=2)
-text(115, 0.09, "walk - ball", cex = .8, col=2)
-
-# annotate the data in CSV
-require(class)
-df = data.frame(intensity=tempED,activity=0)
-write.csv(df, "PeterHip.csv", row.names=FALSE)
-# manual classification modification 0.75;0.8;0.1
-# df = read.csv(file = "/home/pet5o/Dropbox/uni/09-csc8625-GroupProject/dataEvaluation/annotated/PeterHip.csv")
-df = read.csv(file = "C:/Users/localadmin/Dropbox/uni/09-csc8625-GroupProject/dataEvaluation/annotated/PeterHip.csv")
-
-write.csv(tempED, "RawaHip.csv", row.names=FALSE)
-
+# kNN fitting - supplied arguments must be at least 2 dimensional data
+# knn(train data, test data, annotation, k, whether to calculate probababilities)
 fit.knn <- knn(data.frame(df$intensity,1), data.frame(tempED,1), factor(df$activity), k = 3, prob=TRUE)
 summary(fit.knn)
+
+# visualize the classification
 points(x=1:158,y=rep(0.072,158),col=fit.knn[1:158], pch=16)
-abline(v=126, col = 3)
+# histogram
 hist(tempED, breaks = 25)
 
 # smoothing
@@ -123,17 +83,4 @@ Average = (c(cumsum(tempED), 0,0,0,0,0) -
 
 Average = Average[3:(length(Average)-5)]
 plot(tempED, xlab = "Time", ylab="Intensity", type="l", main="Smoothing - hip")
-lines(Average, col = 2)
-
-# test
-data = c(1,1.1,2.2,1.8,5,6.3,3.2,4.2)
-testdata = c(1.5,5.3)
-fit.knn <- knn(data.frame(data,1), data.frame(testdata,1), factor(c(1,1,1,1,2,2,2,2)), k = 3, prob = TRUE)
-fit.knn
-
-# normalized Euclidian distance
-calcEuclidian = function(x,y,z,boundary=1) {
-  sqrt((x*x) + (y*y) + (z*z)) / sqrt(3 * boundary*boundary)
-}
-  
-  
+lines(Average, col = 2)  
