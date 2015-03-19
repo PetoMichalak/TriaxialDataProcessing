@@ -47,14 +47,14 @@ for (i in 1:frameCount) {
 }
 
 # plot summary
-plot(tempED[128:250], xlab = "Time", ylab="Intensity", type="l", main="Peter train wrist")
+plot(statsSummary[128:250], xlab = "Time", ylab="Intensity", type="l", main="Peter train wrist")
 # save it to the file
-write.csv(data.frame(intensity=tempED[90:128],activity="1"), 
+write.csv(data.frame(intensity=statsSummary[90:128],activity="1"), 
           "010_wrist_walking_suitcase.csv", row.names=FALSE)
 
 # kNN fitting - supplied arguments must be at least 2 dimensional data
 # knn(train data, test data, annotation, k, whether to calculate probababilities)
-fit.knn <- knn(data.frame(df$intensity,1), data.frame(tempED,1), factor(df$activity), k = 3, prob=TRUE)
+fit.knn <- knn(data.frame(df$intensity,1), data.frame(statsSummary,1), factor(df$activity), k = 3, prob=TRUE)
 summary(fit.knn)
 
 # visualize the classification
