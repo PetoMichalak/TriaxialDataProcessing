@@ -1,27 +1,64 @@
 # calculating our own euclidian statistics
 require(GENEAread)
 
-# our own euclidian statistics
-# datafile="/home/pet5o/workspace/TDP/WednesdayData/resting/data/left_hip.bin"
-datafile="C:/Users/localadmin/Documents/Projects/BBetter/TDP/testingWednesday/A_020091_2015-03-11 12-18-13.bin"
-datafile="C:/Users/localadmin/Documents/Projects/BBetter/TDP/testingWednesday/A_020164_2015-03-11 12-21-03.bin"
-datafile="C:/Users/localadmin/Documents/Projects/BBetter/TDP/data/005_pet5o__015800_2015-03-03_14-16-07.bin"
+# set to your own path
+datapath = "C:/Users/localadmin/Documents/Projects/BBetter/TDP/officialTests/"
 
-# training sets
-datafile="/home/pet5o/workspace/TDP/ThreeTrainingSets/data/Jack_002_right_wrist_020164_2015-03-10 17-50-10.bin"
-datafile="/home/pet5o/workspace/TDP/ThreeTrainingSets/data/Jack_002_left_hip_020091_2015-03-10 18-28-16.bin"
-datafile="/home/pet5o/workspace/TDP/ThreeTrainingSets/data/Peter_003_right wrist_015800_2015-03-10 18-30-03.bin"
-datafile="/home/pet5o/workspace/TDP/ThreeTrainingSets/data/Peter_003_left hip_020088_2015-03-10 18-40-35.bin"
+# change working directory 
+setwd(datapath)
 
-# training set
-datafileHip="C:/Users/localadmin/Documents/Projects/BBetter/TDP/officialTests/Simon_001_left hip_020097_2015-03-10 17-54-46.bin"
-datafileWrist="C:/Users/localadmin/Documents/Projects/BBetter/TDP/officialTests/Simon_001_right wrist_020163_2015-03-10 17-58-54.bin"
+# all training sets
+trainDataJackWrist = "Jack_002_right_wrist_020164_2015-03-10 17-50-10.bin"
+trainDataJackHip = "Jack_002_left_hip_020091_2015-03-10 18-28-16.bin"
+trainDataPeterWrist = "Peter_003_right wrist_015800_2015-03-10 18-30-03.bin"
+trainDataPeterHip = "Peter_003_left hip_020088_2015-03-10 18-40-35.bin"
+trainDataSimonWrist = "Simon_001_right wrist_020163_2015-03-10 17-58-54.bin"
+trainDataSimonHip = "Simon_001_left hip_020097_2015-03-10 17-54-46.bin"
+
+# clean the data training data
+data=read.bin(trainDataPeterWrist)
+
+startTime = 1425917535
+endTime = 1427017535
+
+# extract given timestamps
+startIndex = -1
+endIndex = -1
+startFound = FALSE
+
+# attempt to return index of datapoints based on start and end timestamp
+for (i in 1:nrow(data$data.out)) {
+  if (!startFound) {
+    if (data$data.out[i] > startTime) {
+      startIndex = i
+      startFound = TRUE
+    }
+  } else {
+    if (data$data.out[i] > endTime) {
+      endIndex = i - 1
+      break
+    }
+  }
+}
+
 # number of seconds for the output
 SPLIT_INTERVAL=5
 # sampling frequency
 FREQUENCY=100
 # set boundary for the inputted data
 SET_BOUNDARY=8
+
+Sys.time()
+# vectorized ED calc
+for (i in 1:frameCount) {
+  startIndex = 1 + max_interval * (i - 1)
+  endIndex = i * max_interval
+  tempDF = dataSnippet[startIndex:endIndex,]
+  # normalized Euclidian distance  
+  tempED[i] = mean(sqrt(tempDF[,2]*tempDF[,2] + tempDF[,3]*tempDF[,3] + tempDF[,4]*tempDF[,4]) / 
+                     boundaryConstant)
+}
+Sys.time()
 
 # read data
 data=read.bin(datafile)
@@ -34,7 +71,8 @@ as.POSIXct(data$data.out[nrow(data$data.out),1], origin="1970-01-01")
 
 # calculate statistical summaries for every splitInterval
 as.POSIXct(data$data.out[490000,1], origin="1970-01-01")
-dataSnippet=data$data.out[5953000:6032000,]
+
+dataSnippet=data$data.out[17190000:17460000,]
 counter=1
 max_interval=SPLIT_INTERVAL * FREQUENCY
 frameCount = floor(nrow(dataSnippet)/max_interval)
@@ -53,7 +91,10 @@ for (i in 1:frameCount) {
 }
 Sys.time()
 
-plot(tempED, xlab = "Time", ylab="Intensity", type="l", main="Rawa test set - hip")
+plot(tempED[128:250], xlab = "Time", ylab="Intensity", type="l", main="Peter train wrist")
+write.csv(data.frame(intensity=tempED[90:128],activity="1"), 
+          "010_wrist_walking_suitcase.csv", row.names=FALSE)
+
 abline(v=49, col=2)
 abline(v=99, col=2)
 text(20, 0.09, "walk - no resistance", cex = .8, col=2)
