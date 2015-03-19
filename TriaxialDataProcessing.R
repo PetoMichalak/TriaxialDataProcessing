@@ -2,7 +2,8 @@
 require(GENEAread)
 
 # set to your own path
-datapath = "C:/Users/localadmin/Documents/Projects/BBetter/TDP/officialTests/"
+# datapath = "C:/Users/localadmin/Documents/Projects/BBetter/TDP/officialTests/"
+datapath = "/home/pet5o/workspace/TDP/ThreeTrainingSets/data"
 
 # change working directory 
 setwd(datapath)
@@ -15,8 +16,10 @@ trainDataPeterHip = "Peter_003_left hip_020088_2015-03-10 18-40-35.bin"
 trainDataSimonWrist = "Simon_001_right wrist_020163_2015-03-10 17-58-54.bin"
 trainDataSimonHip = "Simon_001_left hip_020097_2015-03-10 17-54-46.bin"
 
-# clean the data training data
+# calculate statistical summaries for every splitInterval
+# (manually input start and end index)
 data=read.bin(trainDataPeterWrist)
+dataSnippet=data$data.out[8920000:9228000,]
 
 # number of seconds for the output
 SPLIT_INTERVAL=5
@@ -25,30 +28,12 @@ FREQUENCY=100
 # set boundary for the inputted data
 SET_BOUNDARY=8
 
-Sys.time()
-# vectorized ED calc
-for (i in 1:frameCount) {
-  startIndex = 1 + max_interval * (i - 1)
-  endIndex = i * max_interval
-  tempDF = dataSnippet[startIndex:endIndex,]
-  # normalized Euclidian distance  
-  tempED[i] = mean(sqrt(tempDF[,2]*tempDF[,2] + tempDF[,3]*tempDF[,3] + tempDF[,4]*tempDF[,4]) / 
-                     boundaryConstant)
-}
-Sys.time()
-
-# read data
-data=read.bin(datafile)
-
-# calculate statistical summaries for every splitInterval
-# (manually input start and end index)
-dataSnippet=data$data.out[17190000:17460000,]
-
+# get ready for statistics summary calculation
 counter=1
 max_interval=SPLIT_INTERVAL * FREQUENCY
 frameCount = floor(nrow(dataSnippet)/max_interval)
-# statistical summaries data folder
-tempED = rep(NA, frameCount)
+# data holder for statistics summary
+statsSummary = rep(NA, frameCount)
 boundaryConstant = sqrt(3 * SET_BOUNDARY*SET_BOUNDARY)
 
 # vectorized ED calc
@@ -57,8 +42,8 @@ for (i in 1:frameCount) {
   endIndex = i * max_interval
   tempDF = dataSnippet[startIndex:endIndex,]
   # normalized Euclidian distance  
-  tempED[i] = mean(sqrt(tempDF[,2]*tempDF[,2] + tempDF[,3]*tempDF[,3] + tempDF[,4]*tempDF[,4]) / 
-                     boundaryConstant)
+  statsSummary[i] = mean(sqrt(tempDF[,2]*tempDF[,2] + tempDF[,3]*tempDF[,3] + tempDF[,4]*tempDF[,4]) / 
+                         boundaryConstant)
 }
 
 # plot summary
