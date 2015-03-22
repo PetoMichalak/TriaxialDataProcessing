@@ -14,6 +14,7 @@ testData = read.csv("RawaHip.csv")
 annotation = testData$activity
 
 confMatrix <- getConfMatrix(testData$intensity, annotation, trainData)
+accuracy <- getAccuracy(confMatrix)
 
 # returns a confusion matrix
 getConfMatrix = function(testData, annotation, trainData) {
@@ -37,4 +38,24 @@ getConfMatrix = function(testData, annotation, trainData) {
   return(confMatrix)
 }
 
-
+# calculates accuracy for each class
+getAccuracy = function(confMatrix) {
+  acc = rep(0,ncol(confMatrix))
+  for (i in 1:ncol(confMatrix)) {
+    # true positive
+    TP = confMatrix[i,i]
+    tempCM = confMatrix
+    tempCM[i,i] = 0
+    # false positive
+    FP = sum(tempCM[,i])
+    # false negative
+    FN = sum(tempCM[i,])
+    tempCM[i,] = 0
+    tempCM[,i] = 0
+    # true negative
+    TN = sum(tempCM)
+    # accuracy
+    acc[i] = (TP + TN) / (TP + FP + FN + TN)
+  }
+  return(acc)
+}
