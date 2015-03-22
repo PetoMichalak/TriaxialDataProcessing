@@ -18,8 +18,8 @@ trainDataSimonHip = "Simon_001_left hip_020097_2015-03-10 17-54-46.bin"
 
 # calculate statistical summaries for every splitInterval
 # (manually input start and end index)
-data=read.bin(trainDataPeterWrist)
-dataSnippet=data$data.out[8920000:9228000,]
+data=read.bin(trainDataSimonHip)
+dataSnippet=data$data.out[325000:620000,]
 
 # number of seconds for the output
 SPLIT_INTERVAL=5
@@ -47,10 +47,10 @@ for (i in 1:frameCount) {
 }
 
 # plot summary
-plot(statsSummary[128:250], xlab = "Time", ylab="Intensity", type="l", main="Peter train wrist")
+plot(statsSummary[573:588], xlab = "Time", ylab="Intensity", type="l", main="Simon train hip")
 # save it to the file
-write.csv(data.frame(intensity=statsSummary[90:128],activity="1"), 
-          "010_wrist_walking_suitcase.csv", row.names=FALSE)
+write.csv(data.frame(intensity=statsSummary[573:588],activity="2"), 
+          "023_hip_jog.csv", row.names=FALSE)
 
 # kNN fitting - supplied arguments must be at least 2 dimensional data
 # knn(train data, test data, annotation, k, whether to calculate probababilities)
