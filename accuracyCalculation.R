@@ -15,6 +15,9 @@ annotation = testData$activity
 
 confMatrix <- getConfMatrix(testData$intensity, annotation, trainData)
 accuracy <- getAccuracy(confMatrix)
+precision <- getPrecision(confMatrix)
+recall <- getRecall(confMatrix)
+fmeasure <- getFmeasure(confMatrix)
 
 # returns a confusion matrix
 getConfMatrix = function(testData, annotation, trainData) {
@@ -58,4 +61,54 @@ getAccuracy = function(confMatrix) {
     acc[i] = (TP + TN) / (TP + FP + FN + TN)
   }
   return(acc)
+}
+
+# calculates precision for each class
+getPrecision = function(confMatrix) {
+  p = rep(0,ncol(confMatrix))
+  for (i in 1:ncol(confMatrix)) {
+    # true positive
+    TP = confMatrix[i,i]
+    tempCM = confMatrix
+    tempCM[i,i] = 0
+    # false positive
+    FP = sum(tempCM[,i])
+    # precision
+    p[i] = TP / (TP + FP)
+  }
+  return(p)
+}
+
+# calculates recall for each class
+getRecall = function(confMatrix) {
+  r = rep(0,ncol(confMatrix))
+  for (i in 1:ncol(confMatrix)) {
+    # true positive
+    TP = confMatrix[i,i]
+    tempCM = confMatrix
+    tempCM[i,i] = 0
+    # false negative
+    FN = sum(tempCM[i,])
+    # accuracy
+    r[i] = TP / (TP + FN)
+  }
+  return(r)
+}
+
+# calculates F-measure for each class
+getFmeasure = function(confMatrix) {
+  fMeasure = rep(0,ncol(confMatrix))
+  for (i in 1:ncol(confMatrix)) {
+    # true positive
+    TP = confMatrix[i,i]
+    tempCM = confMatrix
+    tempCM[i,i] = 0
+    # false positive
+    FP = sum(tempCM[,i])
+    # false negative
+    FN = sum(tempCM[i,])
+    # accuracy
+    fMeasure[i] = (2 * TP) / (2 * TP + FP + FN)
+  }
+  return(fMeasure)
 }
