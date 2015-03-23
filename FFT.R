@@ -6,6 +6,8 @@ require(GENEAread)
 require(class)
 # library for fft
 require(stats)
+library(GeneCycle)
+require(seewave)
 
 # set to your own path
 # datapath = "C:/Users/localadmin/Documents/Projects/BBetter/TDP/officialTests/"
@@ -61,3 +63,11 @@ convert.fft <- function(cs, sample.rate=1) {
 }
 
 convert.fft(fft(tempDF[,2]))
+plot.frequency.spectrum(tempDF[,2])
+
+X.k <- fft(tempDF[,2])                   # find all harmonics with fft()
+plot.frequency.spectrum(X.k, xlimits=c(0,20))
+summary(X.k)
+
+# testing seewave
+spec(tempDF[,2], 100)

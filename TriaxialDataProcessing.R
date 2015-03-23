@@ -3,7 +3,9 @@ require(GENEAread)
 
 # set to your own path
 # datapath = "C:/Users/localadmin/Documents/Projects/BBetter/TDP/officialTests/"
-datapath = "/home/pet5o/workspace/TDP/ThreeTrainingSets/data"
+# datapath = "/home/pet5o/workspace/TDP/ThreeTrainingSets/data"
+# datapath = "/home/pet5o/workspace/TDP/data/WednesdayData/data"
+datapath = "/home/pet5o/workspace/TDP/data/15-03-23"
 
 # change working directory 
 setwd(datapath)
@@ -16,10 +18,15 @@ trainDataPeterHip = "Peter_003_left hip_020088_2015-03-10 18-40-35.bin"
 trainDataSimonWrist = "Simon_001_right wrist_020163_2015-03-10 17-58-54.bin"
 trainDataSimonHip = "Simon_001_left hip_020097_2015-03-10 17-54-46.bin"
 
+testRawaWrist = "A_020164_2015-03-11 12-21-03.bin"
+testRawaHip = "A_020091_2015-03-11 12-18-13.bin"
+
+freeDataPeter="Peter_right wrist_015800_2015-03-23 10-20-36.bin"
+
 # calculate statistical summaries for every splitInterval
 # (manually input start and end index)
-data=read.bin(trainDataSimonHip)
-dataSnippet=data$data.out[325000:620000,]
+data=read.bin(freeDataPeter)
+dataSnippet=data$data.out
 
 # number of seconds for the output
 SPLIT_INTERVAL=5
@@ -47,14 +54,15 @@ for (i in 1:frameCount) {
 }
 
 # plot summary
-plot(statsSummary[573:588], xlab = "Time", ylab="Intensity", type="l", main="Simon train hip")
+plot(statsSummary, xlab = "Time", ylab="Intensity", type="l", main="Peter unleashed")
 # save it to the file
-write.csv(data.frame(intensity=statsSummary[573:588],activity="2"), 
-          "023_hip_jog.csv", row.names=FALSE)
+write.csv(data.frame(intensity=statsSummary,activity="1"), 
+          "RawaWrist.csv", row.names=FALSE)
 
 # kNN fitting - supplied arguments must be at least 2 dimensional data
 # knn(train data, test data, annotation, k, whether to calculate probababilities)
 fit.knn <- knn(data.frame(df$intensity,1), data.frame(statsSummary,1), factor(df$activity), k = 3, prob=TRUE)
+fit.knn <- knn(data.frame(trainDataWrist$intensity, 1), data.frame(statsSummary, 1), factor(trainDataWrist$activity), k=3, prob=TRUE)
 summary(fit.knn)
 
 # visualize the classification
