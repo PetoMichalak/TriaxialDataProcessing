@@ -43,31 +43,36 @@ for (i in 1:frameCount) {
   startIndex = 1 + max_interval * (i - 1)
   endIndex = i * max_interval
   tempDF = dataSnippet[startIndex:endIndex,]
+  spectrum(tempDF)  
   # normalized Euclidian distance  
   statsSummary[i] = mean(sqrt(tempDF[,2]*tempDF[,2] + tempDF[,3]*tempDF[,3] + tempDF[,4]*tempDF[,4]) / 
                            boundaryConstant)
 }
 
-# cs is the vector of complex points to convert
-convert.fft <- function(cs, sample.rate=1) {
-  cs <- cs / length(cs) # normalize
+# http://cowlet.org/2013/09/15/understanding-data-science-feature-extraction-with-r.html
+x.fft <- fft(tempDF[,2])
+# Ignore the 2nd half, which are complex conjugates of the 1st half, 
+# and calculate the Mod (magnitude of each complex number)
+amplitude <- Mod(x.fft[1:(length(x.fft)/2)])
+# Calculate the frequencies
+frequency <- seq(0, 10000, length.out=length(x.fft)/2)
+# Plot!
+plot(amplitude ~ frequency, t="l")
+# zoom in
+plot(amplitude ~ frequency, t="l", xlim=c(0,5000), ylim=c(0,100))
+axis(1, at=seq(0,5000,250), labels=FALSE)  # add more ticks
+# dc term (at 0 Hz)
+
+
+fft.profile <- function (dataset, n)
+{
+  fft.data <- fft(dataset)
+  amplitude <- Mod(fft.data[1:(length(fft.data)/2)])
+  frequencies <- seq(0, 10000, length.out=length(fft.data)/2)
   
-  distance.center <- function(c)signif( Mod(c),        4)
-  angle           <- function(c)signif( 180*Arg(c)/pi, 3)
-  
-  df <- data.frame(cycle    = 0:(length(cs)-1),
-                   freq     = 0:(length(cs)-1) * sample.rate / length(cs),
-                   strength = sapply(cs, distance.center),
-                   delay    = sapply(cs, angle))
-  df
+  sorted <- sort.int(amplitude, decreasing=TRUE, index.return=TRUE)
+  top <- sorted$ix[1:n] # indexes of the largest n components
+  return (frequencies[top]) # convert indexes to frequencies
 }
 
-convert.fft(fft(tempDF[,2]))
-plot.frequency.spectrum(tempDF[,2])
-
-X.k <- fft(tempDF[,2])                   # find all harmonics with fft()
-plot.frequency.spectrum(X.k, xlimits=c(0,20))
-summary(X.k)
-
-# testing seewave
-spec(tempDF[,2], 100)
+fft.profile(tempDF[,2], 15)
