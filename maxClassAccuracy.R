@@ -78,9 +78,10 @@ maxClassAccuracy = function(hipTrainFile, wristTrainFile, hipTestStream,
   
   # produce plots of given data with the best prediction
   par(mfrow=c(2,1))
-  plot(testWristSS, xlab = "Time", ylab="Intensity", type="l", main="Wrist data", ylim=c(0.07,0.08))
+  # TODO - nasty ylim constants - should really set it dynamically
+  plot(testWristSS, xlab = "Time", ylab="Intensity", type="l", main="Wrist data", ylim=c(0.07,0.09))
   points(x=1:length(pred),y=rep(0.07,length(pred)),col=pred, pch=16)
-  plot(testHipSS, xlab = "Time", ylab="Intensity", type="l", main="Hip data", ylim=c(0.07,0.08))
+  plot(testHipSS, xlab = "Time", ylab="Intensity", type="l", main="Hip data", ylim=c(0.07,0.09))
   points(x=1:length(pred),y=rep(0.07,length(pred)),col=pred, pch=16)
   
   # provide statitics summaries of a model if test annotation provided
