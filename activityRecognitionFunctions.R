@@ -40,3 +40,89 @@ getStreamQuality = function(trainData, testData, k = 3) {
   # return mean of individual classification probabilities
   return(mean(attributes(fit.knn)$prob))
 }
+
+# returns a confusion matrix
+getConfMatrix = function(fit, annotation, size = 3) {
+  confMatrix = matrix(rep(0, size*size), nrow = size, ncol = size)
+  # to be able to add fill up confMatrix
+  fit.numeric = as.numeric(fit)
+  
+  # to match the levels
+  annotation = annotation + 1
+  for(i in 1:length(fit.numeric)) {
+    confMatrix[fit.numeric[i], annotation[i]] = confMatrix[fit.numeric[i],annotation[i]] + 1
+  }
+  return(confMatrix)
+}
+
+# calculates accuracy for each class
+getAccuracy = function(confMatrix) {
+  acc = rep(0,ncol(confMatrix))
+  for (i in 1:ncol(confMatrix)) {
+    # true positive
+    TP = confMatrix[i,i]
+    tempCM = confMatrix
+    tempCM[i,i] = 0
+    # false positive
+    FP = sum(tempCM[,i])
+    # false negative
+    FN = sum(tempCM[i,])
+    tempCM[i,] = 0
+    tempCM[,i] = 0
+    # true negative
+    TN = sum(tempCM)
+    # accuracy
+    acc[i] = (TP + TN) / (TP + FP + FN + TN)
+  }
+  return(acc)
+}
+
+# calculates precision for each class
+getPrecision = function(confMatrix) {
+  p = rep(0,ncol(confMatrix))
+  for (i in 1:ncol(confMatrix)) {
+    # true positive
+    TP = confMatrix[i,i]
+    tempCM = confMatrix
+    tempCM[i,i] = 0
+    # false positive
+    FP = sum(tempCM[,i])
+    # precision
+    p[i] = TP / (TP + FP)
+  }
+  return(p)
+}
+
+# calculates recall for each class
+getRecall = function(confMatrix) {
+  r = rep(0,ncol(confMatrix))
+  for (i in 1:ncol(confMatrix)) {
+    # true positive
+    TP = confMatrix[i,i]
+    tempCM = confMatrix
+    tempCM[i,i] = 0
+    # false negative
+    FN = sum(tempCM[i,])
+    # accuracy
+    r[i] = TP / (TP + FN)
+  }
+  return(r)
+}
+
+# calculates F-measure for each class
+getFmeasure = function(confMatrix) {
+  fMeasure = rep(0,ncol(confMatrix))
+  for (i in 1:ncol(confMatrix)) {
+    # true positive
+    TP = confMatrix[i,i]
+    tempCM = confMatrix
+    tempCM[i,i] = 0
+    # false positive
+    FP = sum(tempCM[,i])
+    # false negative
+    FN = sum(tempCM[i,])
+    # accuracy
+    fMeasure[i] = (2 * TP) / (2 * TP + FP + FN)
+  }
+  return(fMeasure)
+}
