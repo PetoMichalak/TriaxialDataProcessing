@@ -33,8 +33,15 @@ getStatSummary = function(dataStream) {
   return(statsSummary)
 }
 
-# runs kNN on given data and returns stream quality
-getStreamQuality = function(trainData, testData, k = 3) {
+# runs kNN on given data and returns stream quality (train/test data are data frames)
+getStreamQuality_df = function(trainData, trainAnnotation, testData, k = 3) {
+  fit.knn <- knn(trainData, testData, factor(trainAnnotation), k = k, prob=TRUE)
+  # return mean of individual classification probabilities
+  return(mean(attributes(fit.knn)$prob))
+}
+
+# runs kNN on given data and returns stream quality (train/test data is only vector)
+getStreamQuality_vector = function(trainData, testData, k = 3) {
   fit.knn <- knn(data.frame(trainData$intensity, 1), data.frame(testData, 1), 
                  factor(trainData$activity), k = k, prob=TRUE)
   # return mean of individual classification probabilities
