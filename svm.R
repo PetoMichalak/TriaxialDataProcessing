@@ -1,57 +1,27 @@
-#SVM library
-require(e1071)
+#grab the svm function from doSVM
+source("/home/simon/Code/GROUP_PRJ/group-har/doSVM.R")
 
 # ********************** #
 # *** Load & Prepare *** #
 # ********************** #
-dataset <- read.csv('/home/simon/Data/GRP/test/wdbc.data',head=FALSE)
+testset <- read.csv('/home/simon/Data/GRP/testing/RawaHip.csv',head=TRUE)[1:2]
 
-index <- 1:nrow(dataset)
+trainset <- read.csv('/home/simon/Data/GRP/training/merged/HipTrain.csv',head=TRUE)[1:2]
 
-testindex <- sample(index, trunc(length(index)*30/100))
+### HACKY MESS ###
+#Make sure the headers are removed, factors are factors, and columns have the right naming.... 
+colnames(testset)[colnames(testset)=="intensity"] <- "V1"
+colnames(testset)[colnames(testset)=="activity"] <- "V2"
 
-testset <- dataset[testindex,]
+colnames(trainset)[colnames(trainset)=="intensity"] <- "V1"
+colnames(trainset)[colnames(trainset)=="activity"] <- "V2"
 
-trainset <- dataset[-testindex,]
-
-doSVM(V2~., trainset, testset)
-
-doSVM = function(formula, trainset, testset){
-  
-  # ******************************* #
-  # *** Choosing the Parameters *** #
-  # ******************************* #
-  environment(as.formula("y ~ x"))
-  tuned <- tune.svm(formula, data = trainset, gamma = 10^(-6:-1), cost = 10^(-1:1)) 
-  
-  cat("Gamma: ",tuned$best.parameters[1,1],"\n")
-  cat("Cost:  ",tuned$best.parameters[1,2],"\n")
-
-  # ************************** #
-  # *** Training the model *** #
-  # ************************** #
-  #From the tuned data we can see that the best gamma and cost are tuned$best.parameters[1,1] & tuned$best.parameters[1,2]
-  #model  <- svm(V2~., data = trainset, kernel="radial", gamma=tuned$best.parameters[1,1], cost=tuned$best.parameters[1,2]) 
-
-  
-}
+testset$V2 = factor(testset$V2)
+trainset$V2 = factor(trainset$V2)
+### /HACKY MESS ###
 
 
-
-
-
-
-
-# ************************** #
-# *** Testing the Model *** #
-# ************************** #
-prediction <- predict(model, testset[,-2])
-
-tab <- table(pred = prediction, true = testset[,2])
-tab
-
-#Produce SVM Model on the training set
-
-#Run against the test set
-
-#Evaluate
+# ****************** #
+# *** Do the SVM *** #
+# ****************** #
+tab = doSVM(V2~., trainset, testset)
