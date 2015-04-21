@@ -5,16 +5,23 @@
 # statistics summaries will be produced (conf.matrix, accuracy, precision, F-measure and recall)
 
 # these functions are essential - CHANGE TO MATCH YOUR PATH to 'activityRecognitionFunctions.R'
-# source("/home/pet5o/workspace/TDP/R/group-har/activityRecognitionFunctions.R")
-source("C:/Users/localadmin/Documents/workspace/TDP/classification/activityRecognitionFunctions.R")
+source("/home/pet5o/workspace/TDP/R/group-har/activityRecognitionFunctions.R")
+# source("C:/Users/localadmin/Documents/workspace/TDP/classification/activityRecognitionFunctions.R")
 
-setwd("C:/Users/localadmin/Dropbox/uni/09-csc8625-GroupProject/dataEvaluation/annotated_w_fft/testing")
-# setwd("/home/pet5o/Dropbox/uni/09-csc8625-GroupProject/dataEvaluation/annotated_w_fft/testing")
+# setwd("C:/Users/localadmin/Dropbox/uni/09-csc8625-GroupProject/dataEvaluation/annotated_w_fft/testing")
+setwd("/home/pet5o/workspace/TDP/data/24hr/")
+dayHipFile = "__020163_2015-04-15 21-43-03_HIP.bin"
+dayWristFile = "__020164_2015-04-15 21-43-21_WRIST.bin"
+
+setwd("/home/pet5o/Dropbox/uni/09-csc8625-GroupProject/dataEvaluation/annotated_w_fft/testing/")
 hipTrainFile = "HipTrain.csv"
 wristTrainFile = "WristTrain.csv"
 hipTestStream = "RawaHip.csv"
 wristTestStream = "RawaWrist.csv"
 testAnnotation = read.csv("RawaHip.csv")$activity
+
+classificationResults <- maxClassAccuracy(hipTrainFile, wristTrainFile, hipTestStream, wristTestStream
+                                          testAnnotation, testDataInCSV = TRUE)
 
 fit.knn <- maxClassAccuracy_46f(hipTrainFile, wristTrainFile, hipTestStream, wristTestStream, 
                             testAnnotation = testAnnotation, testDataInCSV = TRUE)
