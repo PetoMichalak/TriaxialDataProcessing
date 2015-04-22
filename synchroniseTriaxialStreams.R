@@ -9,7 +9,7 @@ path = "/home/pet5o/workspace/TDP/data/Jack_weekend17-19April"
 wristDataPath = "Jack_right wrist_020164_2015-04-20 15-04-16.bin"
 hipDataPath = "Jack_left hip_020163_2015-04-20 14-51-02.bin"
 # timeStart and timeEnd allow to make a snippet of data
-# for now they need to be in milliseconds from epoch origin="1970-01-01"
+# for now they need to be in seconds from epoch origin="1970-01-01"
 # print(as.numeric(Sys.time())) might help to determine the values
 timeStart = 0 
 # default end time is now
@@ -26,10 +26,10 @@ hipData = read.bin(hipDataPath)
 
 # print the data start timestamps
 wristStart = wristData$data.out[1,1]
-wristEnd = wristData$data.out[(nrow(wristData$data.out)-1),1]
+wristEnd = wristData$data.out[nrow(wristData$data.out),1]
 
 hipStart = hipData$data.out[1,1]
-hipEnd = hipData$data.out[(nrow(hipData$data.out)-1),1]
+hipEnd = hipData$data.out[nrow(hipData$data.out),1]
 
 # pick the later start
 monitoringStart = 0
