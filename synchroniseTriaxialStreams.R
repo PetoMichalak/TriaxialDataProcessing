@@ -1,7 +1,5 @@
-# sync up the data
-# insert two streams
-# if date is insert - cut it down
-# if no date inserted - find later beginning find first end
+# synchronise two datastreams from binary format 
+
 
 # load required libraries
 require(GENEAread)
@@ -10,8 +8,12 @@ require(GENEAread)
 path = "C:/Users/localadmin/Documents/workspace/TDP/Jack_weekend17-19April"
 wristDataPath = "Jack_left hip_020163_2015-04-20 14-51-02.bin"
 hipDataPath = "Jack_right wrist_020164_2015-04-20 15-04-16.bin"
-timeStart = c() 
-endStart = c()
+# timeStart and timeEnd allow to make a snippet of data
+# for now they need to be in milliseconds from epoch origin="1970-01-01"
+# print(as.numeric(Sys.time())) might help to determine the values
+timeStart = 0 
+# default end time is now
+timeEnd = as.numeric(Sys.time())
 # ===
 
 # load data
@@ -42,6 +44,14 @@ if (wristEnd < hipEnd) {
   monitoringEnd = wristEnd
 } else {
   monitoringEnd = hipEnd
+}
+
+# adjust time and end time if necessary
+if (monitoringStart < timeStart) {
+  monitoringStart = timeStart
+}
+if (monitoringEnd > timeEnd) {
+  monitoringEnd = timeEnd
 }
 
 # save the data between start and stop interval
