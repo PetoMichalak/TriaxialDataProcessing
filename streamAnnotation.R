@@ -3,7 +3,7 @@ require(tools)
 
 # === modify to suit your needs
 path = "/home/pet5o/workspace/TDP/data/Jack_weekend17-19April"
-streamDataPath = "Jack_wrist_sample.csv"
+streamDataPath = "Jack_hip_sample.csv"
 annotationPath = "annotation.csv"
 
 # load data
@@ -33,4 +33,4 @@ write.csv(streamData,
           row.names=FALSE)
 
 # nice histogram to get a feeling on how much data is annotated
-# hist(streamData$activity)
+# hist(streamData$activity, main=paste("Histogram of", streamDataPath))
