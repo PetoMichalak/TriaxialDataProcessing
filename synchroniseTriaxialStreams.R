@@ -1,7 +1,7 @@
 # synchronise two datastreams from binary format 
 
-
 # load required libraries
+require(tools)
 require(GENEAread)
 
 # === modify to suit your needs
@@ -55,5 +55,9 @@ if (monitoringEnd > timeEnd) {
 }
 
 # save the data between start and stop interval
-write.csv(wristData$data.out[wristData$data.out[,1]>monitoringStart & wristData$data.out[,1]<monitoringEnd,], paste(wristDataPath,".csv",sep=""), row.names=FALSE)
-write.csv(hipData$data.out[hipData$data.out[,1]>monitoringStart & hipData$data.out[,1]<monitoringEnd,], paste(hipDataPath,".csv",sep=""), row.names=FALSE)
+write.csv(wristData$data.out[wristData$data.out[,1]>monitoringStart & 
+                               wristData$data.out[,1]<monitoringEnd,], 
+          paste(file_path_sans_ext(wristDataPath),".csv",sep=""), row.names=FALSE)
+write.csv(hipData$data.out[hipData$data.out[,1]>monitoringStart & 
+                             hipData$data.out[,1]<monitoringEnd,], 
+          paste(file_path_sans_ext(hipDataPath),".csv",sep=""), row.names=FALSE)
