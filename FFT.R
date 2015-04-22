@@ -38,7 +38,8 @@ frameCount = floor(nrow(dataSnippet)/max_interval)
 # data holder for statistics summary
 statsSummary = rep(NA, frameCount)
 # data holder for fft data
-fftData = rep(NA, frameCount * TOP_FREQ)
+fftCount = TOP_FREQ * SPLIT_INTERVAL * 3
+fftData = matrix(0, ncol = fftCount, nrow = frameCount)
 
 boundaryConstant = sqrt(3 * SET_BOUNDARY*SET_BOUNDARY)
 # for each dataframe we have 5 seconds for each x,y,z coord
@@ -52,8 +53,14 @@ for (i in 1:frameCount) {
   endIndex = i * max_interval
   tempDF = dataSnippet[startIndex:endIndex,]
   startIndex = i + (i-1) * fftWidth - (i - 1)
-  # cat(startIndex,";")
-  fftData[startIndex:(startIndex + fftWidth)] = calcFFT(tempDF, TOP_FREQ)
+  # calculate top n FFTs (count depends on sampling_rate)
+  # x
+  fftData[i,1:(fftCount/3)] = extractFFT(tempDF[,2], TOP_FREQ, sampling_rate = FREQUENCY)
+  # y
+  fftData[i,(fftCount/3+1):(fftCount/3*2)] = extractFFT(tempDF[,3], TOP_FREQ, sampling_rate = FREQUENCY)
+  # z
+  fftData[i,(fftCount/3*2+1):(fftCount)] = extractFFT(tempDF[,4], TOP_FREQ, sampling_rate = FREQUENCY)
+  
   # print(fftData[startIndex:(startIndex + fftWidth)])
   # normalized Euclidian distance  
   statsSummary[i] = mean(sqrt(tempDF[,2]*tempDF[,2] + tempDF[,3]*tempDF[,3] + tempDF[,4]*tempDF[,4]) / 
@@ -111,4 +118,19 @@ calcFFT = function(data, n = 15) {
   fft.summary[(13*n+1):(14*n)] = fft.profile(data[,4][301:400], n)
   fft.summary[(14*n+1):(15*n)] = fft.profile(data[,4][401:500], n)
   return(fft.summary)
+}
+
+# extracts FFT from given dataset
+extractFFT = function(data, n = 15, sampling_rate = FREQUENCY) {
+  number_of_runs = length(data)/sampling_rate
+  fft.extract = rep(NA, (number_of_runs * n))
+  # extract n highest FFTs; ignore the first one as we handle it with stat summary (static zero)
+  for (i in 1:number_of_runs) {
+    # data index
+    startIndex = i + (i-1) * sampling_rate - (i - 1)
+    # result index
+    fftStart = i + (i-1) * n - (i - 1)
+    fft.extract[fftStart:(i*n)] = fft.profile(data[startIndex:(i*sampling_rate)], n + 1)[-1]
+  }
+  return(fft.extract)
 }
