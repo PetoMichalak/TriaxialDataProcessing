@@ -25,7 +25,7 @@ fit.knn <- maxClassAccuracy_76f(hipTrainFile, wristTrainFile, hipTestStream, wri
 fit.knn <- maxClassAccuracy_226f(hipTrainFile, wristTrainFile, hipTestStream, wristTestStream, 
                                  testAnnotation = testAnnotation, testDataInCSV = TRUE)
 
-# using 3 top freq from each 3 * 3 * 5 = 45 FFT features
+# using 3 top freq from each 3 * 3 * 5 = 45 FFT features + intensity
 # works (so far) only for CSV test/train set 
 maxClassAccuracy_46f = function(hipTrainFile, wristTrainFile, hipTestStream, 
                                 wristTestStream, testAnnotation = c(), testDataInCSV = FALSE) {
