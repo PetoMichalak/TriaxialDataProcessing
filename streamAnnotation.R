@@ -24,8 +24,13 @@ for (i in 1:nrow(annotation)) {
   record = annotation[i,]
   startTime = as.numeric(as.POSIXct(record$starttime, tz="BST"))
   endTime = as.numeric(as.POSIXct(record$endtime, tz="BST"))
-  streamData$activity[streamData$timestamp > startTime & streamData$timestamp < endTime] = record$activity
+  streamData$activity[streamData$timestamp > startTime & 
+                        streamData$timestamp < endTime] = record$activity
 }
+
+write.csv(streamData, 
+          paste(file_path_sans_ext(streamDataPath),"_annotated.csv",sep=""), 
+          row.names=FALSE)
 
 # nice histogram to get a feeling on how much data is annotated
 # hist(streamData$activity)
