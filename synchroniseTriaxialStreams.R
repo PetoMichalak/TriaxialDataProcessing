@@ -5,9 +5,9 @@
 require(GENEAread)
 
 # === modify to suit your needs
-path = "C:/Users/localadmin/Documents/workspace/TDP/Jack_weekend17-19April"
-wristDataPath = "Jack_left hip_020163_2015-04-20 14-51-02.bin"
-hipDataPath = "Jack_right wrist_020164_2015-04-20 15-04-16.bin"
+path = "/home/pet5o/workspace/TDP/data/Jack_weekend17-19April"
+wristDataPath = "Jack_right wrist_020164_2015-04-20 15-04-16.bin"
+hipDataPath = "Jack_left hip_020163_2015-04-20 14-51-02.bin"
 # timeStart and timeEnd allow to make a snippet of data
 # for now they need to be in milliseconds from epoch origin="1970-01-01"
 # print(as.numeric(Sys.time())) might help to determine the values
