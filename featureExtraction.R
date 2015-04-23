@@ -112,6 +112,6 @@ if("activity" %in% colnames(data)) {
 }
 
 # save to the disk
-write.csv(streamData, 
-          paste(file_path_sans_ext(streamDataPath),"_features.csv",sep=""), 
+write.csv(output, 
+          paste(file_path_sans_ext(dataPath),"_features.csv",sep=""), 
           row.names=FALSE)
