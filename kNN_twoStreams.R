@@ -99,6 +99,7 @@ points(x=1:length(pred),y=rep(0.07,length(pred)),col=pred, pch=16)
 dev.off()
 
 # save the result
+# take away one from prediction as it counts as 1,2,3 isntead of 0,1,2 - see 'pred <- as.numeric(fit.knn)'
 outputWrist = data.frame(timestamp=testWrist$timestamp, activity=testWrist$activity, prediction=pred-1)
 outputHip = data.frame(timestamp=testHip$timestamp, activity=testHip$activity, prediction=pred-1)
 
