@@ -2,7 +2,7 @@
 
 # === modify to suit your needs
 path = "/home/pet5o/workspace/TDP/data/Jack_weekend17-19April"
-dataPath = "Jack_wrist_sample_annotated.csv"
+dataPath = "Jack_hip_sample_annotated.csv"
 # size of the window (in seconds) for feature extraction
 SPLIT_INTERVAL=5
 # sampling frequency
