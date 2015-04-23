@@ -91,6 +91,37 @@ maxClassAccuracy = function(hipTrainFile, wristTrainFile, hipTestStream, fftFeat
   return(fit.knn)
 }
 
+# === FEATURE EXTRACTION ===
+# extracts FFT from given dataset
+extractFFT = function(data, n = 15, sampling_rate = FREQUENCY) {
+  number_of_runs = length(data)/sampling_rate
+  fft.extract = rep(NA, (number_of_runs * n))
+  # extract n highest FFTs; ignore the first one as we handle it with stat summary (static zero)
+  for (i in 1:number_of_runs) {
+    # data index
+    startIndex = i + (i-1) * sampling_rate - (i - 1)
+    # result index
+    fftStart = i + (i-1) * n - (i - 1)
+    fft.extract[fftStart:(i*n)] = fft.profile(data[startIndex:(i*sampling_rate)], n + 1)[-1]
+  }
+  return(fft.extract)
+}
+
+# creates a colnames for fft matrix
+getColNames = function(seconds, points) {
+  colNames = c()
+  for (i in 1:seconds) {
+    colNames = c(colNames, paste("fft_",i,"x",1:points, sep=""))
+  }
+  for (i in 1:seconds) {
+    colNames = c(colNames, paste("fft_",i,"y",1:points, sep=""))
+  }
+  for (i in 1:seconds) {
+    colNames = c(colNames, paste("fft_",i,"z",1:points, sep=""))
+  }
+  return(colNames)
+}
+
 # calculates normalized euclidian distance
 # calculates FFT and returns given number of features
 featureExtraction = function(data, fftCount = 25) {

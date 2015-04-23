@@ -25,11 +25,25 @@ source("/home/pet5o/workspace/TDP/R/group-har/activityRecognitionFunctions.R")
 counter=1
 max_interval=SPLIT_INTERVAL * FREQUENCY
 frameCount = floor(nrow(data)/max_interval)
+# data holder for starting timestamp
+timestamps = rep(NA, frameCount)
+# data holder for mean, variance and standard deviations
+means_x = rep(NA, frameCount)
+means_y = rep(NA, frameCount)
+means_z = rep(NA, frameCount)
+vars_x = rep(NA, frameCount)
+vars_y = rep(NA, frameCount)
+vars_z = rep(NA, frameCount)
+sds_x = rep(NA, frameCount)
+sds_y = rep(NA, frameCount)
+sds_z = rep(NA, frameCount)
+# data holder for annotation
+activities = rep(NA, frameCount)
 # data holder for statistics summary
 statsSummary = rep(NA, frameCount)
 # data holder for fft data
 fftCount = TOP_FREQ * SPLIT_INTERVAL * 3
-fftData = matrix(0, ncol = fftCount, nrow = frameCount)
+fftData = matrix(0, ncol = fftCount, nrow = frameCount, dimnames = list(NULL, getColNames(SPLIT_INTERVAL, TOP_FREQ)))
 
 boundaryConstant = sqrt(3 * SET_BOUNDARY*SET_BOUNDARY)
 # for each dataframe we have 5 seconds for each x,y,z coord
@@ -39,38 +53,65 @@ fftWidth = TOP_FREQ*5*3
 # TODO vectorize - probably problem with final frame size : (
 # sapply and data.table should improve the performance dramatically
 for (i in 1:frameCount) {
+  # calculate the data range 
   startIndex = 1 + max_interval * (i - 1)
   endIndex = i * max_interval
   tempDF = data[startIndex:endIndex,]
-  startIndex = i + (i-1) * fftWidth - (i - 1)
+  # capture the timestamp
+  timestamps[i] = tempDF[1,1]
+    
   # calculate top n FFTs (count depends on sampling_rate)
+  startIndex = i + (i-1) * fftWidth - (i - 1)
   # x
   fftData[i,1:(fftCount/3)] = extractFFT(tempDF[,2], TOP_FREQ, sampling_rate = FREQUENCY)
   # y
   fftData[i,(fftCount/3+1):(fftCount/3*2)] = extractFFT(tempDF[,3], TOP_FREQ, sampling_rate = FREQUENCY)
   # z
   fftData[i,(fftCount/3*2+1):(fftCount)] = extractFFT(tempDF[,4], TOP_FREQ, sampling_rate = FREQUENCY)
+  
   # normalized Euclidian distance  
   statsSummary[i] = mean(sqrt(tempDF[,2]*tempDF[,2] + tempDF[,3]*tempDF[,3] + tempDF[,4]*tempDF[,4]) / 
                            boundaryConstant)
-}
 
-# calculate mean, variance, standard deviation
-
-# if annotation was included in source file, copy it further
-
-
-# extracts FFT from given dataset
-extractFFT = function(data, n = 15, sampling_rate = FREQUENCY) {
-  number_of_runs = length(data)/sampling_rate
-  fft.extract = rep(NA, (number_of_runs * n))
-  # extract n highest FFTs; ignore the first one as we handle it with stat summary (static zero)
-  for (i in 1:number_of_runs) {
-    # data index
-    startIndex = i + (i-1) * sampling_rate - (i - 1)
-    # result index
-    fftStart = i + (i-1) * n - (i - 1)
-    fft.extract[fftStart:(i*n)] = fft.profile(data[startIndex:(i*sampling_rate)], n + 1)[-1]
+  # calculate mean, variance, standard deviation
+  means_x[i] = mean(tempDF[,2])
+  means_y[i] = mean(tempDF[,3])
+  means_z[i] = mean(tempDF[,4])
+  vars_x[i] = var(tempDF[,2])
+  vars_y[i] = var(tempDF[,3])
+  vars_z[i] = var(tempDF[,4])
+  sds_x[i] = sd(tempDF[,2])
+  sds_y[i] = sd(tempDF[,3])
+  sds_z[i] = sd(tempDF[,4])
+  
+  # if annotation was included in source file, copy it further
+  # TODO pick the most frequent value
+  if("activity" %in% colnames(tempDF)) {
+    activities[i] = tempDF$activity[1]
   }
-  return(fft.extract)
 }
+
+# bundle all the info together (with timestamp)
+output = data.frame()
+if("activity" %in% colnames(data)) {
+  fftDF = as.data.frame(as.table(fftData))
+  output = data.frame(timestamp = timestamps, 
+                      activity = activities, statSummary = statsSummary, 
+                      mean_x = means_x, mean_y = means_y, mean_z = means_z,
+                      var_x = vars_x, var_y = vars_y, var_z = vars_z,
+                      sd_x = sds_x, sd_y = sds_y, sd_z = sds_z)
+  output = cbind(output, as.data.frame(fftData))
+} else {
+  fftDF = as.data.frame(as.table(fftData))
+  output = data.frame(timestamp = timestamps, 
+                      activity = -1, statSummary = statsSummary, 
+                      mean_x = means_x, mean_y = means_y, mean_z = means_z,
+                      var_x = vars_x, var_y = vars_y, var_z = vars_z,
+                      sd_x = sds_x, sd_y = sds_y, sd_z = sds_z)
+  output = cbind(output, as.data.frame(fftData))
+}
+
+# save to the disk
+write.csv(streamData, 
+          paste(file_path_sans_ext(streamDataPath),"_features.csv",sep=""), 
+          row.names=FALSE)
