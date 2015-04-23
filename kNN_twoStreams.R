@@ -98,16 +98,14 @@ plot(testHip$statSummary, xlab = "Time", ylab="Intensity", type="l", main="Hip d
 points(x=1:length(pred),y=rep(0.07,length(pred)),col=pred, pch=16)
 dev.off()
 
-
 # save the result
+outputWrist = data.frame(timestamp=testWrist$timestamp, activity=testWrist$activity, prediction=pred-1)
+outputHip = data.frame(timestamp=testHip$timestamp, activity=testHip$activity, prediction=pred-1)
 
+write.csv(outputWrist, 
+          paste(file_path_sans_ext(wristDataPath),"_prediction.csv",sep=""), 
+          row.names=FALSE)
 
-# load all csv files in the folder and merge
-loadTrainingData = function(path) {
-  data = data.frame()
-  filenames <- list.files(path, pattern="*.csv", full.names=TRUE)
-  for (file in filenames) {
-    data = rbind(data, read.csv(file))
-  }
-  return(data)
-}
+write.csv(outputHip, 
+          paste(file_path_sans_ext(hipDataPath),"_prediction.csv",sep=""), 
+          row.names=FALSE)

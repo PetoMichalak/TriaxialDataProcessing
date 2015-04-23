@@ -121,6 +121,17 @@ getColNames = function(seconds, points) {
   return(colNames)
 }
 
+# === kNN two streams
+# load all csv files in the folder and merge
+loadTrainingData = function(path) {
+  data = data.frame()
+  filenames <- list.files(path, pattern="*.csv", full.names=TRUE)
+  for (file in filenames) {
+    data = rbind(data, read.csv(file))
+  }
+  return(data)
+}
+
 # calculates normalized euclidian distance
 # calculates FFT and returns given number of features
 featureExtraction = function(data, fftCount = 25) {
