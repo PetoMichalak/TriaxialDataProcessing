@@ -3,9 +3,9 @@ require(GENEAread)
 
 # set to your own path
 # datapath = "C:/Users/localadmin/Documents/Projects/BBetter/TDP/officialTests/"
-# datapath = "/home/pet5o/workspace/TDP/data/ThreeTrainingSets/data"
+datapath = "/home/pet5o/workspace/TDP/data/ThreeTrainingSets/data"
 # datapath = "/home/pet5o/workspace/TDP/data/WednesdayData/data"
-datapath = "/home/pet5o/workspace/TDP/data/15-03-23"
+# datapath = "/home/pet5o/workspace/TDP/data/15-03-23"
 
 # change working directory 
 setwd(datapath)
@@ -25,8 +25,8 @@ freeDataPeter="Peter_right wrist_015800_2015-03-23 10-20-36.bin"
 
 # calculate statistical summaries for every splitInterval
 # (manually input start and end index)
-data=read.bin(freeDataPeter)
-dataSnippet=data$data.out
+data=read.bin(trainDataPeterWrist)
+dataSnippet=data$data.out[17190000:17460000,]
 
 # number of seconds for the output
 SPLIT_INTERVAL=5
@@ -95,3 +95,14 @@ Average = (c(cumsum(tempED), 0,0,0,0,0) -
 Average = Average[3:(length(Average)-5)]
 plot(tempED, xlab = "Time", ylab="Intensity", type="l", main="Smoothing - hip")
 lines(Average, col = 2)  
+
+# raw data collection
+rawData = data.frame()
+plot(dataSnippet[,2][186000:201000], type="l")
+rawData = cbind(dataSnippet[186000:201000,], activity = 0)
+head(rawData)
+nrow(rawData)
+
+write.csv(rawData, 
+          "extractedRawData/PeterTrainWrist_rest_001.csv", 
+          row.names=FALSE)

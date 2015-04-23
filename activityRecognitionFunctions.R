@@ -1,4 +1,5 @@
 # a collection of activity recognition functions
+require(class)
 
 SET_BOUNDARY = 8
 BOUNDARY_CONSTANT = sqrt(3 * SET_BOUNDARY*SET_BOUNDARY)
@@ -7,8 +8,6 @@ BOUNDARY_CONSTANT = sqrt(3 * SET_BOUNDARY*SET_BOUNDARY)
 # classification based on only one feature
 maxClassAccuracy = function(hipTrainFile, wristTrainFile, hipTestStream, fftFeatures = 5,
                             wristTestStream, testAnnotation = c()) {
-  require(class)
-  
   # allows for FFT filtering of training data
   filter = c(TRUE, TRUE, rep(TRUE,fftFeatures), rep(FALSE,15-fftFeatures), 
              rep(TRUE,fftFeatures), rep(FALSE,15-fftFeatures), rep(TRUE,fftFeatures), 

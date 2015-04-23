@@ -1,8 +1,9 @@
 # feature extraction
 
 # === modify to suit your needs
+# path = "/home/pet5o/workspace/TDP/data/ThreeTrainingSets/data/extractedRawData"
 path = "/home/pet5o/workspace/TDP/data/Jack_weekend17-19April"
-dataPath = "Jack_hip_sample_annotated.csv"
+dataPath = "Jack_wrist_sample_annotated.csv"
 # size of the window (in seconds) for feature extraction
 SPLIT_INTERVAL=5
 # sampling frequency
@@ -10,7 +11,7 @@ FREQUENCY=100
 # set boundary for the inputted data (theorethical the highest value)
 SET_BOUNDARY=8
 # number of highest frequencies to take from FFT
-TOP_FREQ = 3
+TOP_FREQ = 15
 
 # load data
 setwd(path)
