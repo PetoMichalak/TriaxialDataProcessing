@@ -1,4 +1,4 @@
-# automatically annotate the stream from external anotation file
+Load# automatically annotate the stream from external anotation file
 require(tools)
 
 # === modify to suit your needs
