@@ -329,8 +329,3 @@ getFmeasure = function(confMatrix) {
   }
   return(fMeasure)
 }
-
-# ggir test
-datafile = "/home/pet5o/Desktop/ggirTest"
-outputdir = "/home/pet5o/Desktop/output"
-out = g.shell.GGIR(mode=c(1,2), datadir=datafile, outputdir=outputdir)
