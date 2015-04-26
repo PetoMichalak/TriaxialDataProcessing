@@ -2,7 +2,7 @@
 
 # === modify to suit your needs
 # path = "/home/pet5o/workspace/TDP/data/ThreeTrainingSets/data/extractedRawData"
-path = "/home/pet5o/workspace/TDP/data/splitting/data/partitioned"
+path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/trainingSets"
 # size of the window (in seconds) for feature extraction
 SPLIT_INTERVAL=5
 # sampling frequency

@@ -5,9 +5,9 @@ require(tools)
 require(GENEAread)
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/data/Jack_weekend17-19April"
-wristDataPath = "Jack_right wrist_020164_2015-04-20 15-04-16.bin"
-hipDataPath = "Jack_left hip_020163_2015-04-20 14-51-02.bin"
+path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets"
+wristDataPath = "Peter_003_right wrist_015800_2015-03-10 18-30-03.bin"
+hipDataPath = "Peter_003_left hip_020088_2015-03-10 18-40-35.bin"
 # timeStart and timeEnd allow to make a snippet of data
 # for now they need to be in seconds from epoch origin="1970-01-01"
 # print(as.numeric(Sys.time())) might help to determine the values
@@ -55,13 +55,20 @@ if (monitoringEnd > timeEnd) {
 }
 
 # add annotation column
-wristData$data.out["activity"] = NA
-hipData$data.out["activity"] = NA
+wristDF = (as.data.frame(wristData$data.out))
+wristDF["activity"] = NA
+hipDF = (as.data.frame(hipData$data.out))
+hipDF["activity"] = NA
 
 # save the data between start and stop interval
-write.csv(wristData$data.out[wristData$data.out[,1]>monitoringStart & 
-                               wristData$data.out[,1]<monitoringEnd,], 
+#write.csv(wristData$data.out[wristData$data.out[,1]>monitoringStart & 
+#                               wristData$data.out[,1]<monitoringEnd,], 
+#          paste(file_path_sans_ext(wristDataPath),".csv",sep=""), row.names=FALSE)
+#write.csv(hipData$data.out[hipData$data.out[,1]>monitoringStart & 
+#                             hipData$data.out[,1]<monitoringEnd,], 
+#          paste(file_path_sans_ext(hipDataPath),".csv",sep=""), row.names=FALSE)
+
+write.csv(wristDF[wristDF[,1]>monitoringStart & wristDF[,1]<monitoringEnd,], 
           paste(file_path_sans_ext(wristDataPath),".csv",sep=""), row.names=FALSE)
-write.csv(hipData$data.out[hipData$data.out[,1]>monitoringStart & 
-                             hipData$data.out[,1]<monitoringEnd,], 
+write.csv(hipDF[hipDF[,1]>monitoringStart & hipDF[,1]<monitoringEnd,], 
           paste(file_path_sans_ext(hipDataPath),".csv",sep=""), row.names=FALSE)
