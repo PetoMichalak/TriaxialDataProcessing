@@ -4,7 +4,7 @@ require(tools)
 
 # === modify to suit your needs
 path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/features/prediction"
-dataPath = "Peter_003_left hip_020088_2015-03-10 18-40-35_annotated_features_234prediction.csv"
+dataPath = "Peter_003_right wrist_015800_2015-03-10 18-30-03_annotated_featuresfeatures234_prediction.csv"
 # ===
 
 # load project specific libraries
@@ -59,10 +59,7 @@ statsy["accuracy"] = getAccuracy(confMatrix)
 statsy["fmeasure"] = getFmeasure(confMatrix)
 statsy["precision"] = getPrecision(confMatrix)
 statsy["recall"] = getRecall(confMatrix)
-cat("Accuracy: ", accuracy)
-cat("\nF-measure: ", fmeasure)
-cat("\nPrecision: ", precision)
-cat("\nRecall: ", recall, "\n")
+print(statsy)
 print("======================================")
 
 # save the output
