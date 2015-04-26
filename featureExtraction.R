@@ -1,9 +1,8 @@
 # feature extraction
 
 # === modify to suit your needs
-# path = "/home/pet5o/workspace/TDP/data/ThreeTrainingSets/data/extractedRawData"
-path = "/home/pet5o/workspace/TDP/data/Jack_weekend17-19April"
-dataPath = "Jack_wrist_sample_annotated.csv"
+path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated"
+dataPath = "Peter_003_right wrist_015800_2015-03-10 18-30-03_annotated.csv"
 # size of the window (in seconds) for feature extraction
 SPLIT_INTERVAL=5
 # sampling frequency
@@ -81,9 +80,9 @@ for (i in 1:frameCount) {
   vars_x[i] = var(tempDF[,2])
   vars_y[i] = var(tempDF[,3])
   vars_z[i] = var(tempDF[,4])
-  sds_x[i] = sd(tempDF[,2])
-  sds_y[i] = sd(tempDF[,3])
-  sds_z[i] = sd(tempDF[,4])
+  # sds_x[i] = sd(tempDF[,2])
+  # sds_y[i] = sd(tempDF[,3])
+  # sds_z[i] = sd(tempDF[,4])
   
   # if annotation was included in source file, copy it further
   # TODO pick the most frequent value

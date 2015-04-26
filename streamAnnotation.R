@@ -1,9 +1,9 @@
-Load# automatically annotate the stream from external anotation file
+# automatically annotate the stream from external anotation file
 require(tools)
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/data/Jack_weekend17-19April"
-streamDataPath = "Jack_hip_sample.csv"
+path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced"
+streamDataPath = "Peter_003_right wrist_015800_2015-03-10 18-30-03.csv"
 annotationPath = "annotation.csv"
 
 # load data
