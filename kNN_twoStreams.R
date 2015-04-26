@@ -104,9 +104,9 @@ outputWrist = data.frame(timestamp=testWrist$timestamp, activity=testWrist$activ
 outputHip = data.frame(timestamp=testHip$timestamp, activity=testHip$activity, prediction=pred-1)
 
 write.csv(outputWrist, 
-          paste(file_path_sans_ext(wristDataPath),"_prediction.csv",sep=""), 
+          paste(file_path_sans_ext(wristDataPath),"features",sum(filterTest),"_prediction.csv",sep=""), 
           row.names=FALSE)
 
 write.csv(outputHip, 
-          paste(file_path_sans_ext(hipDataPath),"_prediction.csv",sep=""), 
+          paste(file_path_sans_ext(hipDataPath),"_",sum(filterTest),"prediction.csv",sep=""), 
           row.names=FALSE)
