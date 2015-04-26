@@ -12,15 +12,6 @@ source("/home/pet5o/workspace/TDP/R/group-har/activityRecognitionFunctions.R")
 # load data
 setwd(path)
 
-filenames <- list.files(path, pattern="*prediction*", full.names=TRUE)
-
-require(class)
-require(parallel)
-cl <- makeCluster(4)
-clusterExport(cl, c("complete.cases","file_path_sans_ext"))
-parLapply(cl, filenames, singleStreamEvaluation)
-stopCluster(cl)
-
 # calculates confusion matrix a statsy things 
 singleStreamEvaluation = function(dataitem) {
   print("Loading data")
@@ -80,9 +71,19 @@ singleStreamEvaluation = function(dataitem) {
   rownames(df) = c("0", "1", "2")
   colnames(df) = c("0", "1", "2")
   write.csv(df, 
-            paste(file_path_sans_ext(dataPath),"_evaluation_confMatrix.csv",sep=""), 
+            paste(file_path_sans_ext(dataitem),"_evaluation_confMatrix.csv",sep=""), 
             row.names=TRUE)
   write.csv(statsy,
-            paste(file_path_sans_ext(dataPath),"_evaluation_stats.csv",sep=""), 
+            paste(file_path_sans_ext(dataitem),"_evaluation_stats.csv",sep=""), 
             row.names=TRUE)
 }
+
+# get all prediction files
+filenames <- list.files(path, pattern="*prediction*", full.names=TRUE)
+
+require(class)
+require(parallel)
+cl <- makeCluster(4)
+clusterExport(cl, c("getAccuracy","getPrecision","getFmeasure","getRecall","complete.cases","file_path_sans_ext"))
+parLapply(cl, filenames, singleStreamEvaluation)
+stopCluster(cl)
