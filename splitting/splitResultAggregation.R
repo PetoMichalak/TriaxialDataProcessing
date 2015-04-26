@@ -1,5 +1,6 @@
 # reads all available confusion matrices 
 # aggregagates results and draws a pie chart
+require(ggplot2)
 
 # === modify to suit your needs
 path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/stream_split/features/prediction/evaluation"
@@ -52,6 +53,25 @@ legend("topright", lbls, cex=0.8, fill=c(3,2,2,5,3,2,5,5,3))
 #   geom_text(aes(y = val/2 + c(0, cumsum(slices)[-length(slices)]), label = percent), size=10)
 # pie + coord_polar(theta = "y")
 
+#confusion <- data.frame(labels = lbls, values = slices)
+
+#p = ggplot(data=confusion, aes(x=labels, y=slices))
+#p = p + geom_bar(width=1)
+#p = p + facet_grid(facets=. ~ slices)
+
+#ggplot(data=confusion, 
+#       aes(x=factor(1),
+#           y=values,
+#           fill = factor(labels))) + 
+#  geom_bar(width = 1) + 
+#  coord_polar(theta="y") +
+#  xlab('Males') +
+#  ylab('') +
+#  labs(fill='Response')
+
+#pie <- ggplot(confusion, aes(x = factor(1), fill = complete.cases(values))) +
+#  geom_bar(width = 1)
+#pie + coord_polar(theta = "y")
 # test measures
 print("===Accuracy measures for best model===")
 print("Confusion matrix: ")
