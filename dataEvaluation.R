@@ -3,8 +3,8 @@
 require(tools)
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/data/Jack_weekend17-19April"
-dataPath = "Jack_wrist_sample_annotated_features_prediction.csv"
+path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/features/prediction"
+dataPath = "Peter_003_left hip_020088_2015-03-10 18-40-35_annotated_features_234prediction.csv"
 # ===
 
 # load project specific libraries
@@ -16,7 +16,7 @@ print("Loading data")
 data = read.csv(dataPath)
 
 # strip unannotated data (-1)
-data = data[data$activity!=-1,]
+data = data[complete.cases(data[,"activity"]),]
 activity = data$activity + 1
 prediction = data$prediction + 1
 
