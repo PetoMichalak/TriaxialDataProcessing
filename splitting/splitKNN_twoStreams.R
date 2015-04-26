@@ -2,9 +2,11 @@
 
 # load project specific libraries
 source("/home/pet5o/workspace/TDP/R/group-har/activityRecognitionFunctions.R")
-wristTrainPath = "/home/pet5o/workspace/TDP/data/ThreeTrainingSets/data/extractedRawData/featuresExtracted/wrist"
-hipTrainPath = "/home/pet5o/workspace/TDP/data/ThreeTrainingSets/data/extractedRawData/featuresExtracted/hip"
+path="/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/stream_split/features"
+wristTrainPath = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/trainingSets/wrist"
+hipTrainPath = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/trainingSets/hip"
 
+# performs kNN classification on two streams of triaxial data (preprocessed)
 kNN_twoStreams = function(wristDataPath, wristTrainPath, hipTrainPath) {
   # === modify to suit your needs
   # path = "/home/pet5o/workspace/TDP/data/Jack_weekend17-19April"
@@ -111,7 +113,7 @@ kNN_twoStreams = function(wristDataPath, wristTrainPath, hipTrainPath) {
             row.names=FALSE)
 }
 
-path="/home/pet5o/workspace/TDP/data/splitting/data/partitioned/features"
+# lists all wrist data files which are paired up with hip files later in function
 filenames <- list.files(path, pattern="*wrist*", full.names=TRUE)
 length(filenames)
 

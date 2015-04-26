@@ -26,9 +26,9 @@ frameCount = ceiling(nrow(wristData) / cutsize)
 for (i in 1:frameCount) {
   startIndex = i + (i-1) * cutsize - (i - 1)
   write.csv(wristData[startIndex:(i*cutsize),], 
-            paste(file_path_sans_ext(wristDataPath),"_part",i,".csv",sep=""), 
+            paste(file_path_sans_ext(wristDataPath),"_WRIST_part",i,".csv",sep=""), 
             row.names=FALSE)
   write.csv(hipData[startIndex:(i*cutsize),], 
-            paste(file_path_sans_ext(hipDataPath),"_part",i,".csv",sep=""), 
+            paste(file_path_sans_ext(wristDataPath),"_HIP_part",i,".csv",sep=""), 
             row.names=FALSE)
 }
