@@ -60,15 +60,9 @@ wristDF["activity"] = NA
 hipDF = (as.data.frame(hipData$data.out))
 hipDF["activity"] = NA
 
-# save the data between start and stop interval
-#write.csv(wristData$data.out[wristData$data.out[,1]>monitoringStart & 
-#                               wristData$data.out[,1]<monitoringEnd,], 
-#          paste(file_path_sans_ext(wristDataPath),".csv",sep=""), row.names=FALSE)
-#write.csv(hipData$data.out[hipData$data.out[,1]>monitoringStart & 
-#                             hipData$data.out[,1]<monitoringEnd,], 
-#          paste(file_path_sans_ext(hipDataPath),".csv",sep=""), row.names=FALSE)
-
+# save data on disk
 write.csv(wristDF[wristDF[,1]>monitoringStart & wristDF[,1]<monitoringEnd,], 
           paste(file_path_sans_ext(wristDataPath),".csv",sep=""), row.names=FALSE)
+
 write.csv(hipDF[hipDF[,1]>monitoringStart & hipDF[,1]<monitoringEnd,], 
           paste(file_path_sans_ext(hipDataPath),".csv",sep=""), row.names=FALSE)
