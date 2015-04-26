@@ -16,7 +16,7 @@ annotation = read.csv(annotationPath, header = TRUE, sep = ",")
 annotation = annotation[annotation$filename==file_path_sans_ext(streamDataPath),]
 
 # set default annotation to -1
-streamData["activity"]=-1
+streamData["activity"]=NA
 
 # convert start and end time of annotation record
 # TODO vectorize

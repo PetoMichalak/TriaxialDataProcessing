@@ -54,6 +54,10 @@ if (monitoringEnd > timeEnd) {
   monitoringEnd = timeEnd
 }
 
+# add annotation column
+wristData$data.out["activity"] = NA
+hipData$data.out["activity"] = NA
+
 # save the data between start and stop interval
 write.csv(wristData$data.out[wristData$data.out[,1]>monitoringStart & 
                                wristData$data.out[,1]<monitoringEnd,], 

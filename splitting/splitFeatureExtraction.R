@@ -22,6 +22,9 @@ extractFeatures = function(item) {
   print(paste("Loading data", item))
   data = read.csv(item)
   
+  # omit rows with missing data
+  data = data[complete.cases(data[,4:6]),]
+  
   # calculate normalized euclidian distance and FFT
   # get ready for statistics summary calculation
   counter=1
