@@ -29,29 +29,6 @@ singleStreamEvaluation = function(dataitem) {
     confMatrix[prediction[i], activity[i]] = confMatrix[prediction[i], activity[i]] + 1
   }
   
-  # make sure there is something to display
-  if (dim(data)[1] != 0) {
-    # make a pie chart of results
-    slices <- c(confMatrix[1,1], confMatrix[1,2], confMatrix[1,3], 
-                confMatrix[2,1], confMatrix[2,2], confMatrix[2,3], 
-                confMatrix[3,1], confMatrix[3,2], confMatrix[3,3])
-    lbls <- c("0:0", "1:0", "2:0", 
-              "1:0", "1:1", "1:2",
-              "2:0", "2:1", "2:2")
-    pie(slices, labels = lbls, clockwise = TRUE, radius = 1,
-        col = c(3,2,2,
-                5,3,2,
-                5,5,3),
-        main="Confusion matrix visualized (predicted:annotated)")
-    legend("topright", lbls, cex=0.8, fill=c(3,2,2,5,3,2,5,5,3))
-  }
-  # TODO draw this pie chart in ggplot
-  # http://stackoverflow.com/questions/8952077/pie-plot-getting-its-text-on-top-of-each-other
-  # pie <- ggplot(slices, aes(x = "", y = lbls, fill = Type)) + 
-  #   geom_bar(width = 1) + 
-  #   geom_text(aes(y = val/2 + c(0, cumsum(slices)[-length(slices)]), label = percent), size=10)
-  # pie + coord_polar(theta = "y")
-  
   # test measures
   print("===Accuracy measures for best model===")
   print("Confusion matrix: ")
