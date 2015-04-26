@@ -1,13 +1,18 @@
 # kNN - split
+require(tools)
 
 # load project specific libraries
 source("/home/pet5o/workspace/TDP/R/group-har/activityRecognitionFunctions.R")
-path="/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/stream_split/features"
+path="/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/stream_split/features/"
 wristTrainPath = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/trainingSets/wrist"
 hipTrainPath = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/trainingSets/hip"
 
+# prepare partial result file
+logPath = paste(path, "/partialResult.log", sep="")
+write("filename,source,kNN",file=logPath, append=FALSE)
+      
 # performs kNN classification on two streams of triaxial data (preprocessed)
-kNN_twoStreams = function(wristDataPath, wristTrainPath, hipTrainPath) {
+kNN_twoStreams = function(wristDataPath, wristTrainPath, hipTrainPath, logPath) {
   # === modify to suit your needs
   # path = "/home/pet5o/workspace/TDP/data/Jack_weekend17-19April"
   # wristDataPath = "Jack_wrist_sample_annotated_features.csv"
@@ -75,10 +80,14 @@ kNN_twoStreams = function(wristDataPath, wristTrainPath, hipTrainPath) {
     cat(wristDataPath, "wrist stream - kNN(", kNN_classifiers[match(maxWristSQ, testWristSQ)], ") performs the best - ", maxWristSQ, "\n")
     fit.knn <- knn(trainWrist[,!(names(trainWrist) %in% drops)], testWrist[,!(names(testWrist) %in% drops)], 
                    factor(trainWrist[,"activity"]), k = match(maxWristSQ, testWristSQ), prob=FALSE)
+    log = paste(wristDataPath, "wrist", kNN_classifiers[match(maxWristSQ, testWristSQ)], sep=",")
+    write(log, file=logPath, append=TRUE)
   } else {
     cat(hipDataPath, "hip stream - kNN(", kNN_classifiers[match(maxHipSQ, testHipSQ)], ") performs the best - ", maxHipSQ, "\n")
     fit.knn <- knn(trainHip[,!(names(trainHip) %in% drops)], testHip[,!(names(testHip) %in% drops)], 
                    factor(trainHip[,"activity"]), k = match(maxHipSQ, testHipSQ), prob=FALSE)
+    log = paste(hipDataPath, "hip", kNN_classifiers[match(maxHipSQ, testHipSQ)], sep=",")
+    write(log, file=logPath, append=TRUE)    
   }
   
   # predictions
@@ -120,5 +129,5 @@ require(class)
 require(parallel)
 cl <- makeCluster(4)
 clusterExport(cl, c("loadTrainingData", "getStreamQuality_df", "knn","file_path_sans_ext"))
-parLapply(cl, filenames, kNN_twoStreams, wristTrainPath, hipTrainPath)
+parLapply(cl, filenames, kNN_twoStreams, wristTrainPath, hipTrainPath, logPath)
 stopCluster(cl)
