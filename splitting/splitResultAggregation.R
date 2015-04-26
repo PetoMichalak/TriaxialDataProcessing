@@ -4,6 +4,7 @@
 # === modify to suit your needs
 path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/stream_split/features/prediction/evaluation"
 logpath = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/stream_split/features/partialResult.log"
+SHOW_KNN_PLOTS = TRUE
 # ===
 
 setwd(path)
@@ -76,22 +77,24 @@ write.csv(statsy,
           paste(file_path_sans_ext(filenames[1]),"_evaluation_stats_aggregated.csv",sep=""), 
           row.names=TRUE)
 
-# barplots to show use of kNN
-par(mfrow=c(1,2))
-x <- summary[summary$source=="hip",3]
-uval <- sort(unique(x))
-if (length(uval) > 1) {
-  counts <- rowSums(sapply(x, function(x) x==uval))
-} else {
-  counts <- length(x)
+if (SHOW_KNN_PLOTS) {
+  # barplots to show use of kNN
+  par(mfrow=c(1,2))
+  x <- summary[summary$source=="hip",3]
+  uval <- sort(unique(x))
+  if (length(uval) > 1) {
+    counts <- rowSums(sapply(x, function(x) x==uval))
+  } else {
+    counts <- length(x)
+  }
+  barplot(counts, names=uval, main = "kNN() count - hip", xlab = "k", ylab = "Count")
+  
+  x <- summary[summary$source=="wrist",3]
+  uval <- sort(unique(x))
+  if (length(uval) > 1) {
+    counts <- rowSums(sapply(x, function(x) x==uval))
+  } else {
+    counts <- length(x)
+  }
+  barplot(counts, names=uval, main = "kNN() count - wrist", xlab = "k", ylab = "Count")
 }
-barplot(counts, names=uval, main = "kNN() count - hip", xlab = "k", ylab = "Count")
-
-x <- summary[summary$source=="wrist",3]
-uval <- sort(unique(x))
-if (length(uval) > 1) {
-  counts <- rowSums(sapply(x, function(x) x==uval))
-} else {
-  counts <- length(x)
-}
-barplot(counts, names=uval, main = "kNN() count - wrist", xlab = "k", ylab = "Count")
