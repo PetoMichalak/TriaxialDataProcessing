@@ -11,11 +11,11 @@ kNN_twoStreams = function(wristDataPath, wristTrainPath, hipTrainPath) {
   # === modify to suit your needs
   # path = "/home/pet5o/workspace/TDP/data/Jack_weekend17-19April"
   # wristDataPath = "Jack_wrist_sample_annotated_features.csv"
-  hipDataPath = hipDataPath = gsub("wrist", "hip", wristDataPath)
+  hipDataPath = gsub("WRIST", "HIP", wristDataPath)
   
   # list of booleans to specify number of features to work with
   filterTestData = c()
-  filterTrainData = c(rep(TRUE,9),rep(FALSE,3),rep(TRUE,225))
+  filterTrainData = c()
   kNN_classifiers = c(3,5,7,11,13,17,19,23)
   # ===
   
@@ -114,8 +114,7 @@ kNN_twoStreams = function(wristDataPath, wristTrainPath, hipTrainPath) {
 }
 
 # lists all wrist data files which are paired up with hip files later in function
-filenames <- list.files(path, pattern="*wrist*", full.names=TRUE)
-length(filenames)
+filenames <- list.files(path, pattern="*WRIST*", full.names=TRUE)
 
 require(class)
 require(parallel)

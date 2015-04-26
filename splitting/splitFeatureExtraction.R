@@ -1,7 +1,7 @@
 # SPLIT feature extraction
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/features_split"
+path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/stream_split"
 # size of the window (in seconds) for feature extraction
 SPLIT_INTERVAL=5
 # sampling frequency
