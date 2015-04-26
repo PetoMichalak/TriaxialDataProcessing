@@ -3,13 +3,22 @@
 
 # === modify to suit your needs
 path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/stream_split/features/prediction/evaluation"
+logpath = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/stream_split/features/partialResult.log"
 # ===
+
+setwd(path)
 
 # load project specific libraries
 source("/home/pet5o/workspace/TDP/R/group-har/activityRecognitionFunctions.R")
 
 # get all prediction files
-filenames <- list.files(path, pattern="*confMatrix*", full.names=TRUE)
+logFiles <- read.csv(logpath)["filename"]
+filenames = rep(NA, dim(logFiles)[1])
+for (i in 1:dim(logFiles)[1]) {
+  # strips the extension and the path from the absolute path
+  item = file_path_sans_ext(basename(as.character(logFiles[i,1])))
+  filenames[i] = paste(item, "_prediction_evaluation_confMatrix.csv", sep="")
+}
 
 # confusion matrix
 size = 3

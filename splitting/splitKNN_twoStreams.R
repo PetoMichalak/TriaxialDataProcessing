@@ -3,7 +3,7 @@ require(tools)
 
 # load project specific libraries
 source("/home/pet5o/workspace/TDP/R/group-har/activityRecognitionFunctions.R")
-path="/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/stream_split/features/"
+path="/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/stream_split/features"
 wristTrainPath = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/trainingSets/wrist"
 hipTrainPath = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/trainingSets/hip"
 
