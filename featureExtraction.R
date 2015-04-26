@@ -34,9 +34,9 @@ means_z = rep(NA, frameCount)
 vars_x = rep(NA, frameCount)
 vars_y = rep(NA, frameCount)
 vars_z = rep(NA, frameCount)
-sds_x = rep(NA, frameCount)
-sds_y = rep(NA, frameCount)
-sds_z = rep(NA, frameCount)
+# sds_x = rep(NA, frameCount)
+# sds_y = rep(NA, frameCount)
+# sds_z = rep(NA, frameCount)
 # data holder for annotation
 activities = rep(NA, frameCount)
 # data holder for statistics summary
@@ -98,16 +98,16 @@ if("activity" %in% colnames(data)) {
   output = data.frame(timestamp = timestamps, 
                       activity = activities, statSummary = statsSummary, 
                       mean_x = means_x, mean_y = means_y, mean_z = means_z,
-                      var_x = vars_x, var_y = vars_y, var_z = vars_z,
-                      sd_x = sds_x, sd_y = sds_y, sd_z = sds_z)
+                      var_x = vars_x, var_y = vars_y, var_z = vars_z)
+                      # sd_x = sds_x, sd_y = sds_y, sd_z = sds_z)
   output = cbind(output, as.data.frame(fftData))
 } else {
   fftDF = as.data.frame(as.table(fftData))
   output = data.frame(timestamp = timestamps, 
                       activity = -1, statSummary = statsSummary, 
                       mean_x = means_x, mean_y = means_y, mean_z = means_z,
-                      var_x = vars_x, var_y = vars_y, var_z = vars_z,
-                      sd_x = sds_x, sd_y = sds_y, sd_z = sds_z)
+                      var_x = vars_x, var_y = vars_y, var_z = vars_z)
+                      # sd_x = sds_x, sd_y = sds_y, sd_z = sds_z)
   output = cbind(output, as.data.frame(fftData))
 }
 

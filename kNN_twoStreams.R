@@ -3,11 +3,11 @@
 # program will run classification routines to determine the optimal configuration
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/data/Jack_weekend17-19April"
-wristDataPath = "Jack_wrist_sample_annotated_features.csv"
-hipDataPath = "Jack_hip_sample_annotated_features.csv"
-wristTrainPath = "/home/pet5o/workspace/TDP/data/ThreeTrainingSets/data/extractedRawData/featuresExtracted/wrist"
-hipTrainPath = "/home/pet5o/workspace/TDP/data/ThreeTrainingSets/data/extractedRawData/featuresExtracted/hip"
+path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/features"
+wristDataPath = "Peter_003_right wrist_015800_2015-03-10 18-30-03_annotated_features.csv"
+hipDataPath = "Peter_003_left hip_020088_2015-03-10 18-40-35_annotated_features.csv"
+wristTrainPath = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/trainingSets/wrist"
+hipTrainPath = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/trainingSets/hip"
 # list of booleans to specify number of features to work with
 filterTestData = c()
 filterTrainData = c()
