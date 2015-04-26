@@ -1,8 +1,7 @@
 # SPLIT feature extraction
 
 # === modify to suit your needs
-# path = "/home/pet5o/workspace/TDP/data/ThreeTrainingSets/data/extractedRawData"
-path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/trainingSets"
+path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/features_split"
 # size of the window (in seconds) for feature extraction
 SPLIT_INTERVAL=5
 # sampling frequency
@@ -122,6 +121,7 @@ extractFeatures = function(item) {
             row.names=FALSE)
 }
 
+# get all files and extract their features in parallel
 filenames <- list.files(path, pattern="*.csv", full.names=TRUE)
 
 # sapply(filenames, extractFeatures)
