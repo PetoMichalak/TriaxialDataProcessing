@@ -85,9 +85,9 @@ pred <- as.numeric(fit.knn)
 
 # save the graph
 if (hipBetter) {
-  pdf(paste("kNN", file_path_sans_ext(hipDataPath),"_class_features",sum(filterTest),".pdf",sep=""))
+  pdf(paste("kNN", file_path_sans_ext(hipDataPath),"_class_features",(sum(filterTest)-2),".pdf",sep=""))
 } else {
-  pdf(paste("kNN", file_path_sans_ext(wristDataPath),"_class_features",sum(filterTest),".pdf",sep=""))
+  pdf(paste("kNN", file_path_sans_ext(wristDataPath),"_class_features",(sum(filterTest)-2),".pdf",sep=""))
 }
 # produce plots of given data with the best prediction
 par(mfrow=c(2,1))
