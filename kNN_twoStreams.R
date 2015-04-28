@@ -9,8 +9,10 @@ hipDataPath = "Peter_003_left hip_020088_2015-03-10 18-40-35_annotated_features.
 wristTrainPath = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01/trainingSets/wrist"
 hipTrainPath = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01/trainingSets/hip"
 # list of booleans to specify number of features to work with
-filterTestData = c()
-filterTrainData = c()
+# add up to 234
+fftCount = 0
+filterTestData = c(rep(TRUE, 9), rep(c(rep(TRUE, fftCount), rep(FALSE, 15-fftCount)), 15))
+filterTrainData = c(rep(TRUE, 9), rep(c(rep(TRUE, fftCount), rep(FALSE, 15-fftCount)), 15))
 kNN_classifiers = c(3,5,7,11,13,17,19,23)
 # ===
 
@@ -83,11 +85,14 @@ if (maxHipSQ < maxWristSQ) {
 # predictions
 pred <- as.numeric(fit.knn)
 
+# create output dir
+dir.create(file.path(path, "kNN"), showWarnings = FALSE)
+
 # save the graph
 if (hipBetter) {
-  pdf(paste("kNN", file_path_sans_ext(hipDataPath),"_class_features",(sum(filterTest)-2),".pdf",sep=""))
+  pdf(paste("kNN/", file_path_sans_ext(hipDataPath),"_class_features",(sum(filterTest)-2),".pdf",sep=""))
 } else {
-  pdf(paste("kNN", file_path_sans_ext(wristDataPath),"_class_features",(sum(filterTest)-2),".pdf",sep=""))
+  pdf(paste("kNN/", file_path_sans_ext(wristDataPath),"_class_features",(sum(filterTest)-2),".pdf",sep=""))
 }
 # produce plots of given data with the best prediction
 par(mfrow=c(2,1))
@@ -102,9 +107,6 @@ dev.off()
 # take away one from prediction as it counts as 1,2,3 isntead of 0,1,2 - see 'pred <- as.numeric(fit.knn)'
 outputWrist = data.frame(timestamp=testWrist$timestamp, activity=testWrist$activity, prediction=pred-1)
 outputHip = data.frame(timestamp=testHip$timestamp, activity=testHip$activity, prediction=pred-1)
-
-# create output dir
-dir.create(file.path(path, "kNN"), showWarnings = FALSE)
 
 write.csv(outputWrist, 
           paste("kNN/",file_path_sans_ext(wristDataPath),"features",sum(filterTest),"_prediction.csv",sep=""), 

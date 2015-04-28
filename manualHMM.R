@@ -1,6 +1,6 @@
 #emission is the training data, intensities and annotation
 
-hmmStrQual = function(observations, initialDist, transition, emission, states){
+hmmStrQual = function(observations, initialDist, transition, emission, states) {
   totalStates = length(states)
   duration = length(observations)
   dfQual = data.frame(intensity=observations, currentState=integer(duration))
@@ -19,8 +19,10 @@ hmmStrQual = function(observations, initialDist, transition, emission, states){
   }
   
   # Want to establish range of values we think are plausible
-  minIntens = min(emission$intensity)
-  maxIntens = max(emission$intensity)
+  # minIntens = min(emission$intensity)
+  minIntens = range(emission$intesity)[1]
+  # maxIntens = max(emission$intensity)
+  maxIntens = range(emission$intesity)[2]
   # Split the data into 30 blocks so we can still get an idea of the distribution
   blocks = (maxIntens - minIntens)/30
   # Need to allow for values either side of the range in the case of test outliers
@@ -71,7 +73,7 @@ hmmStrQual = function(observations, initialDist, transition, emission, states){
   dfQualDim=dim(dfQual)
   for(j in 1:duration){
     location = which(emission$groups == observations$groups[j])
-    if(j = 1){
+    if(j == 1){
       
       dfQual[1,3:dfQualDim[2]] = initialDist * emissionDist[,location]
       dfQual[1,2] = which(dfQual[1,3:dfQualDim[2]] == max(dfQual[1,3:dfQualDim[2]])) - 3
@@ -86,8 +88,30 @@ hmmStrQual = function(observations, initialDist, transition, emission, states){
   return(dfQual)
 }
 
+# load project specific libraries
+source("/home/pet5o/workspace/TDP/R/group-har/activityRecognitionFunctions.R")
+
 # examples of inputs for 'hmmStrQual'
-# initialDist = c(19/24, 3.5/24, 1.5/24)
-# Transition = rbind(c(9/10, 61/1140, 53/1140),
-# c(2/7, 2/3, 1/21),
-# c(6/10, 1/10, 3/10))
+initialDist = c(19/24, 3.5/24, 1.5/24)
+transition = rbind(c(9/10, 61/1140, 53/1140),
+                   c(2/7, 2/3, 1/21),
+                   c(6/10, 1/10, 3/10))
+
+# load the data - observations
+path = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01/featureData/Peter_003_left hip_020088_2015-03-10 18-40-35_annotated_features.csv"
+observations = read.csv(path)
+
+# strip unannotated data 
+# observations = observations[complete.cases(observations[,"activity"]),]
+
+# load training data
+hipDataPath = "Peter_003_left hip_020088_2015-03-10 18-40-35_annotated_features.csv"
+wristTrainPath = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01/trainingSets/wrist"
+hipTrainPath = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01/trainingSets/hip"
+trainHip = loadTrainingData(hipTrainPath)
+emission = data.frame(intesity=trainHip$statSummary, activity=trainHip$activity)
+
+# setup states
+states = c(0,1,2)
+
+hmmStrQual(observations$statSummary, initialDist, Transition, emission, states)

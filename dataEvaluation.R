@@ -4,7 +4,7 @@ require(tools)
 
 # === modify to suit your needs
 path = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01/kNN"
-dataPath = "Peter_003_right wrist_015800_2015-03-10 18-30-03_annotated_featuresfeatures234_prediction.csv"
+dataPath = "Peter_003_right wrist_015800_2015-03-10 18-30-03_annotated_featuresfeatures9_prediction.csv"
 # ===
 
 # load project specific libraries
