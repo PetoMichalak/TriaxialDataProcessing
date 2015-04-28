@@ -5,7 +5,7 @@ require(tools)
 require(GENEAread)
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets"
+path = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01"
 wristDataPath = "Peter_003_right wrist_015800_2015-03-10 18-30-03.bin"
 hipDataPath = "Peter_003_left hip_020088_2015-03-10 18-40-35.bin"
 # timeStart and timeEnd allow to make a snippet of data
@@ -19,10 +19,10 @@ timeEnd = as.numeric(Sys.time())
 # load data
 setwd(path)
 print("Loading wrist data")
-wristData = read.bin(wristDataPath)
+wristData = read.bin(paste("rawData", wristDataPath, sep="/"))
 
 print("Loading hip data")
-hipData = read.bin(hipDataPath)
+hipData = read.bin(paste("rawData", hipDataPath, sep="/"))
 
 # print the data start timestamps
 wristStart = wristData$data.out[1,1]
@@ -60,9 +60,12 @@ wristDF["activity"] = NA
 hipDF = (as.data.frame(hipData$data.out))
 hipDF["activity"] = NA
 
+# create output dir
+dir.create(file.path(path, "syncedData"), showWarnings = FALSE)
+
 # save data on disk
 write.csv(wristDF[wristDF[,1]>monitoringStart & wristDF[,1]<monitoringEnd,], 
-          paste(file_path_sans_ext(wristDataPath),".csv",sep=""), row.names=FALSE)
+          paste("syncedData/", file_path_sans_ext(wristDataPath),".csv",sep=""), row.names=FALSE)
 
 write.csv(hipDF[hipDF[,1]>monitoringStart & hipDF[,1]<monitoringEnd,], 
-          paste(file_path_sans_ext(hipDataPath),".csv",sep=""), row.names=FALSE)
+          paste("syncedData/", file_path_sans_ext(hipDataPath),".csv",sep=""), row.names=FALSE)

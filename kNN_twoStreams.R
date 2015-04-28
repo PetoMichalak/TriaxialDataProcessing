@@ -3,11 +3,11 @@
 # program will run classification routines to determine the optimal configuration
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/features"
+path = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01"
 wristDataPath = "Peter_003_right wrist_015800_2015-03-10 18-30-03_annotated_features.csv"
 hipDataPath = "Peter_003_left hip_020088_2015-03-10 18-40-35_annotated_features.csv"
-wristTrainPath = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/trainingSets/wrist"
-hipTrainPath = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/trainingSets/hip"
+wristTrainPath = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01/trainingSets/wrist"
+hipTrainPath = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01/trainingSets/hip"
 # list of booleans to specify number of features to work with
 filterTestData = c()
 filterTrainData = c()
@@ -20,8 +20,8 @@ source("/home/pet5o/workspace/TDP/R/group-har/activityRecognitionFunctions.R")
 # load data
 setwd(path)
 print("Loading data")
-testWrist = read.csv(wristDataPath)
-testHip = read.csv(hipDataPath)
+testWrist = read.csv(file.path(path,"featureData",wristDataPath))
+testHip = read.csv(file.path(path,"featureData",hipDataPath))
 trainWrist = loadTrainingData(wristTrainPath)
 trainHip = loadTrainingData(hipTrainPath)
 
@@ -85,9 +85,9 @@ pred <- as.numeric(fit.knn)
 
 # save the graph
 if (hipBetter) {
-  pdf(paste(file_path_sans_ext(hipDataPath),"_class_features",sum(filterTest),".pdf",sep=""))
+  pdf(paste("kNN", file_path_sans_ext(hipDataPath),"_class_features",sum(filterTest),".pdf",sep=""))
 } else {
-  pdf(paste(file_path_sans_ext(wristDataPath),"_class_features",sum(filterTest),".pdf",sep=""))
+  pdf(paste("kNN", file_path_sans_ext(wristDataPath),"_class_features",sum(filterTest),".pdf",sep=""))
 }
 # produce plots of given data with the best prediction
 par(mfrow=c(2,1))
@@ -103,10 +103,13 @@ dev.off()
 outputWrist = data.frame(timestamp=testWrist$timestamp, activity=testWrist$activity, prediction=pred-1)
 outputHip = data.frame(timestamp=testHip$timestamp, activity=testHip$activity, prediction=pred-1)
 
+# create output dir
+dir.create(file.path(path, "kNN"), showWarnings = FALSE)
+
 write.csv(outputWrist, 
-          paste(file_path_sans_ext(wristDataPath),"features",sum(filterTest),"_prediction.csv",sep=""), 
+          paste("kNN/",file_path_sans_ext(wristDataPath),"features",sum(filterTest),"_prediction.csv",sep=""), 
           row.names=FALSE)
 
 write.csv(outputHip, 
-          paste(file_path_sans_ext(hipDataPath),"_",sum(filterTest),"prediction.csv",sep=""), 
+          paste("kNN/",file_path_sans_ext(hipDataPath),"_",sum(filterTest),"prediction.csv",sep=""), 
           row.names=FALSE)

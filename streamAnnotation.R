@@ -2,15 +2,15 @@
 require(tools)
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced"
+path = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01"
 streamDataPath = "Peter_003_right wrist_015800_2015-03-10 18-30-03.csv"
 annotationPath = "annotation.csv"
 
 # load data
 setwd(path)
 print("Loading data")
-streamData = read.csv(streamDataPath, header = TRUE, sep = ",")
-annotation = read.csv(annotationPath, header = TRUE, sep = ",")
+streamData = read.csv(file.path(path,"syncedData",streamDataPath), header = TRUE, sep = ",")
+annotation = read.csv(file.path(path, annotationPath), header = TRUE, sep = ",")
 
 # subset only relevant annotation records
 annotation = annotation[annotation$filename==file_path_sans_ext(streamDataPath),]
@@ -28,8 +28,9 @@ for (i in 1:nrow(annotation)) {
                         streamData$timestamp < endTime] = record$activity
 }
 
+# put the data in the same folder
 write.csv(streamData, 
-          paste(file_path_sans_ext(streamDataPath),"_annotated.csv",sep=""), 
+          paste("syncedData/", file_path_sans_ext(streamDataPath), "_annotated.csv",sep=""), 
           row.names=FALSE)
 
 # nice histogram to get a feeling on how much data is annotated

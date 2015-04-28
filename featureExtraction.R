@@ -1,7 +1,7 @@
 # feature extraction
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated"
+path = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01"
 dataPath = "Peter_003_left hip_020088_2015-03-10 18-40-35_annotated.csv"
 # size of the window (in seconds) for feature extraction
 SPLIT_INTERVAL=5
@@ -15,7 +15,7 @@ TOP_FREQ = 15
 # load data
 setwd(path)
 print("Loading data")
-data = read.csv(dataPath)
+data = read.csv(file.path(path,"syncedData",dataPath))
 
 # load project specific libraries
 source("/home/pet5o/workspace/TDP/R/group-har/activityRecognitionFunctions.R")
@@ -111,7 +111,10 @@ if("activity" %in% colnames(data)) {
   output = cbind(output, as.data.frame(fftData))
 }
 
+# create output dir
+dir.create(file.path(path, "featureData"), showWarnings = FALSE)
+
 # save to the disk
 write.csv(output, 
-          paste(file_path_sans_ext(dataPath),"_features.csv",sep=""), 
+          paste("featureData/", file_path_sans_ext(dataPath),"_features.csv",sep=""), 
           row.names=FALSE)

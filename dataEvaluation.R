@@ -3,7 +3,7 @@
 require(tools)
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/features/prediction"
+path = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01/kNN"
 dataPath = "Peter_003_right wrist_015800_2015-03-10 18-30-03_annotated_featuresfeatures234_prediction.csv"
 # ===
 
@@ -27,6 +27,7 @@ for(i in 1:length(prediction)) {
   confMatrix[prediction[i], activity[i]] = confMatrix[prediction[i], activity[i]] + 1
 }
 
+pdf(paste(file_path_sans_ext(dataPath),"_ConfMatrix.pdf",sep=""))
 # make a pie chart of results
 slices <- c(confMatrix[1,1], confMatrix[1,2], confMatrix[1,3], 
             confMatrix[2,1], confMatrix[2,2], confMatrix[2,3], 
@@ -40,6 +41,7 @@ pie(slices, labels = lbls, clockwise = TRUE, radius = 1,
             5,5,3),
     main="Confusion matrix visualized (predicted:annotated)")
 legend("topright", lbls, cex=0.8, fill=c(3,2,2,5,3,2,5,5,3))
+dev.off()
 
 # TODO draw this pie chart in ggplot
 # http://stackoverflow.com/questions/8952077/pie-plot-getting-its-text-on-top-of-each-other

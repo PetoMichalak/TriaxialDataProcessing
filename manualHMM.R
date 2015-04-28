@@ -85,3 +85,9 @@ hmmStrQual = function(observations, initialDist, transition, emission, states){
   }
   return(dfQual)
 }
+
+# examples of inputs for 'hmmStrQual'
+# initialDist = c(19/24, 3.5/24, 1.5/24)
+# Transition = rbind(c(9/10, 61/1140, 53/1140),
+# c(2/7, 2/3, 1/21),
+# c(6/10, 1/10, 3/10))
