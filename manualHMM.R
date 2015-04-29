@@ -19,17 +19,17 @@ hmmStrQual = function(observations, initialDist, transition, emission, states) {
   }
   
   # Want to establish range of values we think are plausible
-  # minIntens = min(emission$intensity)
-  minIntens = range(emission$intesity)[1]
-  # maxIntens = max(emission$intensity)
-  maxIntens = range(emission$intesity)[2]
+  minIntens = min(emission$intensity)
+  # minIntens = range(emission$intesity)[1]
+  maxIntens = max(emission$intensity)
+  # maxIntens = range(emission$intesity)[2]
   # Split the data into 30 blocks so we can still get an idea of the distribution
   blocks = (maxIntens - minIntens)/30
   # Need to allow for values either side of the range in the case of test outliers
   dist = c(-Inf, seq(minIntens, maxIntens, by=blocks), Inf)
   # Create a new column that groups the values based on the given blocks
   emission$groups = cut(emission$intensity, dist, labels=emmisNames) 
-  observations$groups = cut(emission$intensity, dist, labels=emmisNames)
+  observations$groups = cut(observations, dist, labels=emmisNames)
     
   # Seperate data frames into various activities
   trainRestData = emission[emission$activity == 0,]
@@ -53,13 +53,13 @@ hmmStrQual = function(observations, initialDist, transition, emission, states) {
   # Normalise after to ensure the sum equals 1
   # Convert to vector for the HMM function
   
-  tr0tab[tr0tab<0.001] = 0.001
+  tr0tab[tr0tab<0.001] = unique(runif(0.0005, 0.0015, n=2*length(tr0tab[tr0tab<0.001])))[1:length(tr0tab[tr0tab<0.001])]
   tr0tab = tr0tab/sum(tr0tab)
   tr0Vec = as.vector(tr0tab)
-  tr1tab[tr1tab<0.001] = 0.001
+  tr1tab[tr1tab<0.001] = unique(runif(0.0005, 0.0015, n=2*length(tr1tab[tr1tab<0.001])))[1:length(tr1tab[tr1tab<0.001])]
   tr1tab = tr1tab/sum(tr1tab)
   tr1Vec = as.vector(tr1tab)
-  tr2tab[tr2tab<0.001] = 0.001
+  tr2tab[tr2tab<0.001] = unique(runif(0.0005, 0.0015, n=2*length(tr2tab[tr2tab<0.001])))[1:length(tr2tab[tr2tab<0.001])]
   tr2tab = tr2tab/sum(tr2tab)
   tr2Vec = as.vector(tr2tab)
   
@@ -71,18 +71,19 @@ hmmStrQual = function(observations, initialDist, transition, emission, states) {
     dfQual = cbind(dfQual, title = numeric(duration))
   }
   dfQualDim=dim(dfQual)
-  for(j in 1:duration){
-    location = which(emission$groups == observations$groups[j])
+  for(j in 1:duration) {
+    location = as.integer(substr(as.character(observations$groups[j]), 4, nchar(as.character(observations$groups[j]))))
+    # location = which(as.character(emission$groups) == as.character(observations$groups[j]))[1:3]
+    # location = location[location < dim(emissionDist)[2]]
     if(j == 1){
       
       dfQual[1,3:dfQualDim[2]] = initialDist * emissionDist[,location]
-      dfQual[1,2] = which(dfQual[1,3:dfQualDim[2]] == max(dfQual[1,3:dfQualDim[2]])) - 3
+      dfQual[1,2] = which(dfQual[1,3:dfQualDim[2]] == max(dfQual[1,3:dfQualDim[2]])) - 1
       
     } else {
-      
-      dfQual[j,3:dfQualDim[2]] = max(dfQual[(j-1),4:dfQualDim[2]]) * emission[,location] * 
-        transition[dfQual[(j-1),2],]
-      dfQual[j,2] = which(dfQual[j,3:dfQualDim[2]] == max(dfQual[j,3:dfQualDim[2]])) - 3
+      print(j)
+      dfQual[j,3:dfQualDim[2]] = max(dfQual[(j-1),3:dfQualDim[2]]) * emissionDist[,location] * transition[dfQual[(j-1),2]+1,]
+      dfQual[j,2] = which(dfQual[j,3:dfQualDim[2]] == max(dfQual[j,3:dfQualDim[2]])) - 1
     }
   }
   return(dfQual)
@@ -99,19 +100,28 @@ transition = rbind(c(9/10, 61/1140, 53/1140),
 
 # load the data - observations
 path = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01/featureData/Peter_003_left hip_020088_2015-03-10 18-40-35_annotated_features.csv"
-observations = read.csv(path)
+observations_all = read.csv(path)
 
 # strip unannotated data 
 # observations = observations[complete.cases(observations[,"activity"]),]
 
 # load training data
 hipDataPath = "Peter_003_left hip_020088_2015-03-10 18-40-35_annotated_features.csv"
-wristTrainPath = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01/trainingSets/wrist"
+# wristTrainPath = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01/trainingSets/wrist"
 hipTrainPath = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01/trainingSets/hip"
 trainHip = loadTrainingData(hipTrainPath)
-emission = data.frame(intesity=trainHip$statSummary, activity=trainHip$activity)
+emission = data.frame(intensity=trainHip$statSummary, activity=trainHip$activity)
 
 # setup states
 states = c(0,1,2)
 
-hmmStrQual(observations$statSummary, initialDist, Transition, emission, states)
+out = hmmStrQual(observations$statSummary, initialDist, transition, emission, states)
+observations=observations$statSummary
+result = data.frame(timestamp=head(observations_all[,1], n=335), activity= observations_all$activity[1:335],prediction = dfQual[1:335,2])
+# write.csv(result, "HMM_first335observations.csv", row.names=TRUE)
+
+for(j in 1:25){
+  print(j)
+  location = which(emission$groups == observations$groups[j])[1:3]
+  print(location)
+}

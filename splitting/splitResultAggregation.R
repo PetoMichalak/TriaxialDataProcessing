@@ -138,25 +138,3 @@ if (SHOW_KNN_PLOTS) {
   conf = data.frame(Predicted = c(2,1,0,2,1,0,2,1,0), Actual = c(2,2,2,1,1,1,0,0,0), Value = x)
   ggplot(conf, aes(Predicted, Actual, fill = Value)) + geom_raster()
 }
-
-confMatrix = read.csv("/home/pet5o/workspace/TDP/DataEvaluation/pet_01/kNN_fft0/Peter_003_right wrist_015800_2015-03-10 18-30-03_annotated_featuresfeatures9_prediction_evaluation_confMatrix.csv")[,2:4]
-normaliseConf = function(confMatrix) {
-  for (i in 1:nrow(confMatrix)) {
-    confMatrix[i,] = confMatrix[i,] / sum(confMatrix[i,])
-  }
-  return(confMatrix)
-}
-confMatrix = normaliseConf(confMatrix)
-colnames(confMatrix) = c("0", "1", "2")
-rownames(confMatrix) = c("0", "1", "2")
-
-
-qplot(x, y, data = pp(3), fill = z, geom = "raster")    
-
-library(reshape2)
-library(ggplot2)
-m = matrix(x,3)
-
-conf = data.frame(Predicted = c(0,0,0,1,1,1,2,2,2), Actual = c(0,1,2,0,1,2,0,1,2), Proportion = unlist(confMatrix))
-ggplot(conf, aes(Predicted, Actual, fill = Proportion)) + geom_raster() + ggtitle("Confusion Matrix") +
-  theme(plot.title=element_text(family="Times", face="bold", size=20))
