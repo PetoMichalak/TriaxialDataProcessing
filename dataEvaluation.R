@@ -1,10 +1,12 @@
 # this module evaluates the prediction against annotation, if available
-# require(ggplot2)
 require(tools)
+library(reshape2)
+library(ggplot2)
+
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01/kNN"
-dataPath = "Peter_003_right wrist_015800_2015-03-10 18-30-03_annotated_featuresfeatures9_prediction.csv"
+path = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01/kNN_fft0"
+dataPath = "Peter_003_left hip_020088_2015-03-10 18-40-35_annotated_features_9prediction.csv"
 # ===
 
 # load project specific libraries
@@ -43,12 +45,25 @@ pie(slices, labels = lbls, clockwise = TRUE, radius = 1,
 legend("topright", lbls, cex=0.8, fill=c(3,2,2,5,3,2,5,5,3))
 dev.off()
 
-# TODO draw this pie chart in ggplot
-# http://stackoverflow.com/questions/8952077/pie-plot-getting-its-text-on-top-of-each-other
-# pie <- ggplot(slices, aes(x = "", y = lbls, fill = Type)) + 
-#   geom_bar(width = 1) + 
-#   geom_text(aes(y = val/2 + c(0, cumsum(slices)[-length(slices)]), label = percent), size=10)
-# pie + coord_polar(theta = "y")
+# == get a confusion matrix raster 
+# confMatrix = read.csv("/home/pet5o/workspace/TDP/DataEvaluation/pet_01/kNN_fft0/Peter_003_right wrist_015800_2015-03-10 18-30-03_annotated_featuresfeatures9_prediction_evaluation_confMatrix.csv")[,2:4]
+
+pdf(paste(file_path_sans_ext(dataPath),"_ConfMatrixRaster.pdf",sep=""))
+# normalise the confusion matrix
+normaliseConf = function(confMatrix) {
+  for (i in 1:nrow(confMatrix)) {
+    confMatrix[i,] = confMatrix[i,] / sum(confMatrix[i,])
+  }
+  return(confMatrix)
+}
+
+# normalise the values
+normConfMatrix = normaliseConf(confMatrix)
+
+conf = data.frame(Predicted = c(0,0,0,1,1,1,2,2,2), Actual = c(0,1,2,0,1,2,0,1,2), Proportion = unlist(as.list(normConfMatrix)))
+ggplot(conf, aes(Predicted, Actual, fill = Proportion)) + geom_raster() + ggtitle("Confusion Matrix") +
+  theme(plot.title=element_text(family="Times", face="bold", size=20))
+dev.off()
 
 # test measures
 print("===Accuracy measures for best model===")
