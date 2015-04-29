@@ -117,4 +117,46 @@ if (SHOW_KNN_PLOTS) {
     counts <- length(x)
   }
   barplot(counts, names=uval, main = "kNN() count - wrist", xlab = "k", ylab = "Count")
+  
+  # Generate data
+  pp <- function (n,r=4) {
+    x <- seq(-r*pi, r*pi, len=n)
+    df <- expand.grid(x=x, y=x)
+    df$r <- sqrt(df$x^2 + df$y^2)
+    df$z <- cos(df$r^2)*exp(-df$r/6)
+    df
+  }
+  
+  x <- c(74 / (74+176+110), 0, 0, 
+         176 / (74+176+110), 255 / (255+9), 12 / (12), 
+         110 / (74+176+110), 9 / (255+9), 0)
+  qplot(x, y, data = pp(3), fill = z, geom = "raster")    
+
+  library(reshape2)
+  library(ggplot2)
+  m = matrix(x,3)
+  conf = data.frame(Predicted = c(2,1,0,2,1,0,2,1,0), Actual = c(2,2,2,1,1,1,0,0,0), Value = x)
+  ggplot(conf, aes(Predicted, Actual, fill = Value)) + geom_raster()
 }
+
+confMatrix = read.csv("/home/pet5o/workspace/TDP/DataEvaluation/pet_01/kNN_fft0/Peter_003_right wrist_015800_2015-03-10 18-30-03_annotated_featuresfeatures9_prediction_evaluation_confMatrix.csv")[,2:4]
+normaliseConf = function(confMatrix) {
+  for (i in 1:nrow(confMatrix)) {
+    confMatrix[i,] = confMatrix[i,] / sum(confMatrix[i,])
+  }
+  return(confMatrix)
+}
+confMatrix = normaliseConf(confMatrix)
+colnames(confMatrix) = c("0", "1", "2")
+rownames(confMatrix) = c("0", "1", "2")
+
+
+qplot(x, y, data = pp(3), fill = z, geom = "raster")    
+
+library(reshape2)
+library(ggplot2)
+m = matrix(x,3)
+
+conf = data.frame(Predicted = c(0,0,0,1,1,1,2,2,2), Actual = c(0,1,2,0,1,2,0,1,2), Proportion = unlist(confMatrix))
+ggplot(conf, aes(Predicted, Actual, fill = Proportion)) + geom_raster() + ggtitle("Confusion Matrix") +
+  theme(plot.title=element_text(family="Times", face="bold", size=20))
