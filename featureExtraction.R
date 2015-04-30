@@ -1,8 +1,8 @@
 # feature extraction
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01"
-dataPath = "Peter_003_left hip_020088_2015-03-10 18-40-35_annotated.csv"
+path = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_runII"
+dataPath = "hip_all_testdata_withRest.csv"
 # size of the window (in seconds) for feature extraction
 SPLIT_INTERVAL=5
 # sampling frequency

@@ -116,7 +116,7 @@ emission = data.frame(intensity=trainHip$statSummary, activity=trainHip$activity
 states = c(0,1,2)
 
 out = hmmStrQual(observations$statSummary, initialDist, transition, emission, states)
-observations=observations$statSummary
+observations=observations_all$statSummary
 result = data.frame(timestamp=head(observations_all[,1], n=335), activity= observations_all$activity[1:335],prediction = dfQual[1:335,2])
 # write.csv(result, "HMM_first335observations.csv", row.names=TRUE)
 

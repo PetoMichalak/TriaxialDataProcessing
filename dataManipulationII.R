@@ -7,14 +7,14 @@ library(GENEAread)
 # Edit these:
 
 #File you wish to use
-path = "/home/simon/Downloads/RealScience/001_Simon"
-fileName = "S001lefthip.bin"
+path = "/home/pet5o/workspace/TDP/DataEvaluation/pet_presentation_comparison/data/walking_and_workByTheDesk"
+fileName = "Peter_right wrist_020163_2015-04-29 09-29-22.bin"
 fulFilePath = paste(path,fileName,sep="/")
 
 #Time window you wish to view - Start time, End Time
-window = c( "2015-03-10 16:40:00","2015-03-10 16:45:00")
+window = c( "2015-04-28 19:40:00","2015-04-28 19:50:00")
 
-fileToWrite = "01_wrist_behindDesk.csv"
+fileToWrite = "04_wrist_walk002.csv"
 
 
 ##########################################################
@@ -42,5 +42,5 @@ endIndex = which(abs(data[,1]-windowMillis[2]) == min(abs(data[,1]-windowMillis[
 plot(data[,2][startIndex:endIndex], type="l")
 
 # save the snippet
-write.csv(data[startIndex:endIndex,], fileToWrite, row.names=TRUE)
+write.csv(data[startIndex:endIndex,], fileToWrite, row.names=FALSE)
 

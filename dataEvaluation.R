@@ -5,8 +5,8 @@ library(ggplot2)
 
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01/kNN_fft0"
-dataPath = "Peter_003_left hip_020088_2015-03-10 18-40-35_annotated_features_9prediction.csv"
+path = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_runII/kNN_fft5"
+dataPath = "hip_all_testdata_withRest_features_84prediction.csv"
 # ===
 
 # load project specific libraries
@@ -60,7 +60,7 @@ normaliseConf = function(confMatrix) {
 # normalise the values
 normConfMatrix = normaliseConf(confMatrix)
 
-conf = data.frame(Predicted = c(0,0,0,1,1,1,2,2,2), Actual = c(0,1,2,0,1,2,0,1,2), Proportion = unlist(as.list(normConfMatrix)))
+conf = data.frame(Predicted = c(0,1,2,0,1,2,0,1,2), Actual = c(0,0,0,1,1,1,2,2,2), Proportion = unlist(as.list(normConfMatrix)))
 ggplot(conf, aes(Predicted, Actual, fill = Proportion)) + geom_raster() + ggtitle("Confusion Matrix") +
   theme(plot.title=element_text(family="Times", face="bold", size=20))
 dev.off()

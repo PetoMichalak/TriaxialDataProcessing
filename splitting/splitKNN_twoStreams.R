@@ -3,10 +3,12 @@ require(tools)
 
 # load project specific libraries
 source("/home/pet5o/workspace/TDP/R/group-har/activityRecognitionFunctions.R")
-path="/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/stream_split/features"
-wristTrainPath = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/trainingSets/wrist"
-hipTrainPath = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/trainingSets/hip"
+path="/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_runII/fragmentedFeatureData_fft0"
+# TRAINING DATA
+wristTrainPath = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_run/trainingSets/wrist"
+hipTrainPath = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_run/trainingSets/hip"
 
+setwd(path)
 # prepare partial result file
 logPath = paste(path, "/partialResult.log", sep="")
 write("filename,source,kNN",file=logPath, append=FALSE)
@@ -19,8 +21,9 @@ kNN_twoStreams = function(wristDataPath, wristTrainPath, hipTrainPath, logPath) 
   hipDataPath = gsub("WRIST", "HIP", wristDataPath)
   
   # list of booleans to specify number of features to work with
-  filterTestData = c()
-  filterTrainData = c()
+  fftCount = 0
+  filterTestData = c(rep(TRUE, 9), rep(c(rep(TRUE, fftCount), rep(FALSE, 15-fftCount)), 15))
+  filterTrainData = c(rep(TRUE, 9), rep(c(rep(TRUE, fftCount), rep(FALSE, 15-fftCount)), 15))
   kNN_classifiers = c(3,5,7,11,13,17,19,23)
   # ===
   

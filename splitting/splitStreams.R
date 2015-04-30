@@ -1,11 +1,11 @@
 # splitting the data file into smaller
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated"
-wristDataPath = "Peter_003_right wrist_015800_2015-03-10 18-30-03_annotated.csv"
-hipDataPath = "Peter_003_left hip_020088_2015-03-10 18-40-35_annotated.csv"
+path = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_runII/featureData"
+wristDataPath = "wrist_all_testdata_withRest_features.csv"
+hipDataPath = "hip_all_testdata_withRest_features.csv"
 # size of the window (in minutes) for feature extraction
-WINDOW_SIZE=15
+WINDOW_SIZE=5
 # sampling frequency
 FREQUENCY=100
 

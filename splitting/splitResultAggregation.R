@@ -3,8 +3,8 @@
 require(ggplot2)
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/stream_split/features/prediction/evaluation"
-logpath = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/stream_split/features/partialResult.log"
+path = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_runII/fragmentedFeatureData_fft0"
+logpath = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_runII/fragmentedFeatureData_fft0/partialResult.log"
 SHOW_KNN_PLOTS = TRUE
 # ===
 
@@ -138,3 +138,19 @@ if (SHOW_KNN_PLOTS) {
   conf = data.frame(Predicted = c(2,1,0,2,1,0,2,1,0), Actual = c(2,2,2,1,1,1,0,0,0), Value = x)
   ggplot(conf, aes(Predicted, Actual, fill = Value)) + geom_raster()
 }
+
+# normalise the confusion matrix
+normaliseConf = function(confMatrix) {
+  for (i in 1:nrow(confMatrix)) {
+    confMatrix[i,] = confMatrix[i,] / sum(confMatrix[i,])
+  }
+  return(confMatrix)
+}
+
+# normalise the values
+normConfMatrix = normaliseConf(aggregatedConfMatrix)
+pdf(paste(path,"/aggregatedConfMatrixRaster.pdf",sep=""))
+conf = data.frame(Predicted = c(0,1,2,0,1,2,0,1,2), Actual = c(0,0,0,1,1,1,2,2,2), Proportion = unlist(as.list(normConfMatrix)))
+ggplot(conf, aes(Predicted, Actual, fill = Proportion)) + geom_raster() + ggtitle("Confusion Matrix") +
+  theme(plot.title=element_text(family="Times", face="bold", size=20))
+dev.off()

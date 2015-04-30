@@ -3,14 +3,15 @@
 # program will run classification routines to determine the optimal configuration
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01"
-wristDataPath = "Peter_003_right wrist_015800_2015-03-10 18-30-03_annotated_features.csv"
-hipDataPath = "Peter_003_left hip_020088_2015-03-10 18-40-35_annotated_features.csv"
-wristTrainPath = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01/trainingSets/wrist"
-hipTrainPath = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01/trainingSets/hip"
+path = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_runII"
+wristDataPath = "wrist_all_testdata_withRest_features.csv"
+hipDataPath = "hip_all_testdata_withRest_features.csv"
+# TRAINING DATA FOLDERS
+wristTrainPath = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_run/trainingSets/wrist"
+hipTrainPath = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_run/trainingSets/hip"
 # list of booleans to specify number of features to work with
 # add up to 234
-fftCount = 0
+fftCount = 5
 filterTestData = c(rep(TRUE, 9), rep(c(rep(TRUE, fftCount), rep(FALSE, 15-fftCount)), 15))
 filterTrainData = c(rep(TRUE, 9), rep(c(rep(TRUE, fftCount), rep(FALSE, 15-fftCount)), 15))
 kNN_classifiers = c(3,5,7,11,13,17,19,23)

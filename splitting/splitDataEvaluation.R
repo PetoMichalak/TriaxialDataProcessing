@@ -3,7 +3,7 @@
 require(tools)
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/data/150426_1136_workflowTests/testingSets/synced/annotated/stream_split/features/prediction"
+path = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_runII/fragmentedFeatureData_fft0"
 # ===
 
 # load project specific libraries
