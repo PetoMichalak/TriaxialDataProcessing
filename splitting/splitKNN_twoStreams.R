@@ -3,7 +3,7 @@ require(tools)
 
 # load project specific libraries
 source("/home/pet5o/workspace/TDP/R/group-har/activityRecognitionFunctions.R")
-path="/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_runII/fragmentedFeatureData_fft0"
+path="/home/pet5o/workspace/TDP/DataEvaluation/reportWriting/fragmentedFeatureData_fft1"
 # TRAINING DATA
 wristTrainPath = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_run/trainingSets/wrist"
 hipTrainPath = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_run/trainingSets/hip"
@@ -21,7 +21,7 @@ kNN_twoStreams = function(wristDataPath, wristTrainPath, hipTrainPath, logPath) 
   hipDataPath = gsub("WRIST", "HIP", wristDataPath)
   
   # list of booleans to specify number of features to work with
-  fftCount = 0
+  fftCount = 1
   filterTestData = c(rep(TRUE, 9), rep(c(rep(TRUE, fftCount), rep(FALSE, 15-fftCount)), 15))
   filterTrainData = c(rep(TRUE, 9), rep(c(rep(TRUE, fftCount), rep(FALSE, 15-fftCount)), 15))
   kNN_classifiers = c(3,5,7,11,13,17,19,23)
@@ -55,6 +55,10 @@ kNN_twoStreams = function(wristDataPath, wristTrainPath, hipTrainPath, logPath) 
   # drop timestamp and activity
   drops = c("timestamp", "activity")
   
+  # create placeholder for probabilities - later used for Mann-Whitney test
+  predProbHip = list()
+  predProbWrist = list()
+  
   # loop through all kNN options
   for(i in 1:length(kNN_classifiers)) {
     # cat("kNN: ", kNN_classifiers[i])
@@ -62,11 +66,19 @@ kNN_twoStreams = function(wristDataPath, wristTrainPath, hipTrainPath, logPath) 
                                        trainHip[,"activity"], 
                                        testHip[,!(names(testHip) %in% drops)], 
                                        kNN_classifiers[i])
+    predProbHip[[i]] = getPredProb(trainHip[,!(names(trainHip) %in% drops)], 
+                              trainHip[,"activity"], 
+                              testHip[,!(names(testHip) %in% drops)], 
+                              kNN_classifiers[i])
     # cat("; Hip: ", testHipSQ[i])
     testWristSQ[i] = getStreamQuality_df(trainWrist[,!(names(trainWrist) %in% drops)],
                                          trainWrist[,"activity"], 
                                          testWrist[,!(names(testWrist) %in% drops)], 
                                          kNN_classifiers[i])
+    predProbWrist[[i]] = getPredProb(trainHip[,!(names(trainHip) %in% drops)], 
+                              trainHip[,"activity"], 
+                              testHip[,!(names(testHip) %in% drops)], 
+                              kNN_classifiers[i])
     # cat("; Wrist: ", testWristSQ[i], "\n")
   }
   
@@ -74,6 +86,12 @@ kNN_twoStreams = function(wristDataPath, wristTrainPath, hipTrainPath, logPath) 
   # get the highest stream quality
   maxHipSQ = max(testHipSQ)
   maxWristSQ = max(testWristSQ)
+  
+  # 'Mann-Whitney' test on best streams
+  kHip = match(maxHipSQ, testHipSQ)
+  kWrist = match(maxWristSQ, testWristSQ)
+  
+  w.test <- wilcox.test(unlist(predProbWrist[kWrist]), unlist(predProbHip[kHip]))
   
   # make assumption that hip has better SQ; get final prediction at the same time
   hipBetter = TRUE
@@ -83,13 +101,13 @@ kNN_twoStreams = function(wristDataPath, wristTrainPath, hipTrainPath, logPath) 
     cat(wristDataPath, "wrist stream - kNN(", kNN_classifiers[match(maxWristSQ, testWristSQ)], ") performs the best - ", maxWristSQ, "\n")
     fit.knn <- knn(trainWrist[,!(names(trainWrist) %in% drops)], testWrist[,!(names(testWrist) %in% drops)], 
                    factor(trainWrist[,"activity"]), k = match(maxWristSQ, testWristSQ), prob=FALSE)
-    log = paste(wristDataPath, "wrist", kNN_classifiers[match(maxWristSQ, testWristSQ)], sep=",")
+    log = paste(wristDataPath, "wrist", kNN_classifiers[match(maxWristSQ, testWristSQ)], w.test$p.value, sep=",")
     write(log, file=logPath, append=TRUE)
   } else {
     cat(hipDataPath, "hip stream - kNN(", kNN_classifiers[match(maxHipSQ, testHipSQ)], ") performs the best - ", maxHipSQ, "\n")
     fit.knn <- knn(trainHip[,!(names(trainHip) %in% drops)], testHip[,!(names(testHip) %in% drops)], 
                    factor(trainHip[,"activity"]), k = match(maxHipSQ, testHipSQ), prob=FALSE)
-    log = paste(hipDataPath, "hip", kNN_classifiers[match(maxHipSQ, testHipSQ)], sep=",")
+    log = paste(hipDataPath, "hip", kNN_classifiers[match(maxHipSQ, testHipSQ)], w.test$p.value, sep=",")
     write(log, file=logPath, append=TRUE)    
   }
   
@@ -131,6 +149,6 @@ filenames <- list.files(path, pattern="*WRIST*", full.names=TRUE)
 require(class)
 require(parallel)
 cl <- makeCluster(4)
-clusterExport(cl, c("loadTrainingData", "getStreamQuality_df", "knn","file_path_sans_ext"))
+clusterExport(cl, c("loadTrainingData", "getStreamQuality_df", "getPredProb","knn","file_path_sans_ext"))
 parLapply(cl, filenames, kNN_twoStreams, wristTrainPath, hipTrainPath, logPath)
 stopCluster(cl)

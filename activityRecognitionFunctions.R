@@ -236,6 +236,30 @@ getStreamQuality_df = function(trainData, trainAnnotation, testData, k = 3) {
   return(mean(attributes(fit.knn)$prob))
 }
 
+# runs kNN on given data and returns stream quality (train/test data are data frames)
+# saves the histograms of probabilities
+getStreamQuality_df_plot = function(trainData, trainAnnotation, testData, k = 3, isWrist = TRUE) {
+  fit.knn <- knn(trainData, testData, factor(trainAnnotation), k = k, prob=TRUE)
+  if(isWrist) {
+    pdf(paste(getwd(),"/hist_wrist_"+k+".pdf",sep=""))
+  } else {
+    pdf(paste(getwd(),"/hist_hip_"+".pdf",sep=""))
+  }
+  # produce the histograms
+  hist(attributes(fit.knn)$prob)
+  dev.off()
+  # return mean of individual classification probabilities
+  return(mean(attributes(fit.knn)$prob))
+}
+
+# runs kNN on given data and returns prediction probabilities
+getPredProb = function(trainData, trainAnnotation, testData, k = 3) {
+  fit.knn <- knn(trainData, testData, factor(trainAnnotation), k = k, prob=TRUE)
+  # return mean of individual classification probabilities
+  return(attributes(fit.knn)$prob)
+}
+
+
 # runs kNN on given data and returns stream quality (train/test data is only vector)
 getStreamQuality_vector = function(trainData, testData, k = 3) {
   fit.knn <- knn(data.frame(trainData$intensity, 1), data.frame(testData, 1), 
