@@ -3,8 +3,8 @@
 require(ggplot2)
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_runII/fragmentedFeatureData_fft0"
-logpath = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_runII/fragmentedFeatureData_fft0/partialResult.log"
+path = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_runII/fragmentedFeatureData_fft5"
+logpath = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_runII/fragmentedFeatureData_fft5/partialResult.log"
 SHOW_KNN_PLOTS = TRUE
 # ===
 
@@ -154,3 +154,14 @@ conf = data.frame(Predicted = c(0,1,2,0,1,2,0,1,2), Actual = c(0,0,0,1,1,1,2,2,2
 ggplot(conf, aes(Predicted, Actual, fill = Proportion)) + geom_raster() + ggtitle("Confusion Matrix") +
   theme(plot.title=element_text(family="Times", face="bold", size=20))
 dev.off()
+
+# produce a merged prediction graph
+# get all prediction files
+logFiles <- read.csv(logpath)["filename"]
+filenames = rep(NA, dim(logFiles)[1])
+for (i in 1:dim(logFiles)[1]) {
+  # strips the extension and the path from the absolute path
+  item = file_path_sans_ext(basename(as.character(logFiles[i,1])))
+  filenames[i] = paste("predictions/", item, "_prediction.csv", sep="")
+}
+
