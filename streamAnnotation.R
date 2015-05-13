@@ -2,15 +2,16 @@
 require(tools)
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/DataEvaluation/pet_01"
-streamDataPath = "Peter_003_right wrist_015800_2015-03-10 18-30-03.csv"
-annotationPath = "annotation.csv"
+# path to a case study
+path = "TestCase"
+streamDataPath = "TestHip.csv"
+annotationPath = "TestData/annotation.csv"
 
 # load data
 setwd(path)
 print("Loading data")
-streamData = read.csv(file.path(path,"syncedData",streamDataPath), header = TRUE, sep = ",")
-annotation = read.csv(file.path(path, annotationPath), header = TRUE, sep = ",")
+streamData = read.csv(file.path("syncedData",streamDataPath), header = TRUE, sep = ",")
+annotation = read.csv(annotationPath)
 
 # subset only relevant annotation records
 annotation = annotation[annotation$filename==file_path_sans_ext(streamDataPath),]
