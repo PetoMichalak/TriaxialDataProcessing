@@ -17,7 +17,7 @@ kNN_classifiers = c(3,5,7,11,13,17,19,23)
 # ===
 
 # log file
-logPath = paste(path, "/partialResult.log", sep="")
+logPath = paste(path, "/partialResult_svm.log", sep="")
 write("filename,source,kNN",file=logPath, append=FALSE)
 
 # setup the filter

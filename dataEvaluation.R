@@ -5,17 +5,17 @@ library(ggplot2)
 
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_runII/kNN_fft5"
-dataPath = "hip_all_testdata_withRest_features_84prediction.csv"
+# path to a case study
+path = "TestCase"
+dataPath = "kNN/TestHip_annotated_features_24prediction.csv"
 # ===
 
 # load project specific libraries
-source("/home/pet5o/workspace/TDP/R/group-har/activityRecognitionFunctions.R")
+source("activityRecognitionFunctions.R")
 
 # load data
-setwd(path)
 print("Loading data")
-data = read.csv(dataPath)
+data = read.csv(file.path(path,dataPath))
 
 # strip unannotated data (-1)
 data = data[complete.cases(data[,"activity"]),]
@@ -29,7 +29,7 @@ for(i in 1:length(prediction)) {
   confMatrix[prediction[i], activity[i]] = confMatrix[prediction[i], activity[i]] + 1
 }
 
-pdf(paste(file_path_sans_ext(dataPath),"_ConfMatrix.pdf",sep=""))
+pdf(paste(path,"/",file_path_sans_ext(dataPath),"_ConfMatrix.pdf",sep=""))
 # make a pie chart of results
 slices <- c(confMatrix[1,1], confMatrix[1,2], confMatrix[1,3], 
             confMatrix[2,1], confMatrix[2,2], confMatrix[2,3], 
@@ -48,7 +48,7 @@ dev.off()
 # == get a confusion matrix raster 
 # confMatrix = read.csv("/home/pet5o/workspace/TDP/DataEvaluation/pet_01/kNN_fft0/Peter_003_right wrist_015800_2015-03-10 18-30-03_annotated_featuresfeatures9_prediction_evaluation_confMatrix.csv")[,2:4]
 
-pdf(paste(file_path_sans_ext(dataPath),"_ConfMatrixRaster.pdf",sep=""))
+pdf(paste(path,"/",file_path_sans_ext(dataPath),"_ConfMatrixRaster.pdf",sep=""))
 # normalise the confusion matrix
 normaliseConf = function(confMatrix) {
   for (i in 1:nrow(confMatrix)) {
@@ -84,8 +84,8 @@ df = data.frame(confMatrix)
 rownames(df) = c("0", "1", "2")
 colnames(df) = c("0", "1", "2")
 write.csv(df, 
-          paste(file_path_sans_ext(dataPath),"_evaluation_confMatrix.csv",sep=""), 
+          paste(path,"/",file_path_sans_ext(dataPath),"_evaluation_confMatrix.csv",sep=""), 
           row.names=TRUE)
 write.csv(statsy,
-          paste(file_path_sans_ext(dataPath),"_evaluation_stats.csv",sep=""), 
+          paste(path,"/",file_path_sans_ext(dataPath),"_evaluation_stats.csv",sep=""), 
           row.names=TRUE)
