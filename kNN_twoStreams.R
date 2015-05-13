@@ -3,30 +3,36 @@
 # program will run classification routines to determine the optimal configuration
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_runII"
-wristDataPath = "wrist_all_testdata_withRest_features.csv"
-hipDataPath = "hip_all_testdata_withRest_features.csv"
+# path to a case study
+path = "TestCase"
+wristDataPath = "TestWrist_annotated_features.csv"
+hipDataPath = "TestHip_annotated_features.csv"
 # TRAINING DATA FOLDERS
-wristTrainPath = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_run/trainingSets/wrist"
-hipTrainPath = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_run/trainingSets/hip"
+wristTrainPath = "TrainData/wrist"
+hipTrainPath = "TrainData/hip"
 # list of booleans to specify number of features to work with
 # add up to 234
-fftCount = 5
-filterTestData = c(rep(TRUE, 9), rep(c(rep(TRUE, fftCount), rep(FALSE, 15-fftCount)), 15))
-filterTrainData = c(rep(TRUE, 9), rep(c(rep(TRUE, fftCount), rep(FALSE, 15-fftCount)), 15))
+fftCount = 1
 kNN_classifiers = c(3,5,7,11,13,17,19,23)
 # ===
 
+# log file
+logPath = paste(path, "/partialResult.log", sep="")
+write("filename,source,kNN",file=logPath, append=FALSE)
+
+# setup the filter
+filterTestData = c(rep(TRUE, 9), rep(c(rep(TRUE, fftCount), rep(FALSE, 15-fftCount)), 15))
+filterTrainData = c(rep(TRUE, 9), rep(c(rep(TRUE, fftCount), rep(FALSE, 15-fftCount)), 15))
+
 # load project specific libraries
-source("/home/pet5o/workspace/TDP/R/group-har/activityRecognitionFunctions.R")
+source("activityRecognitionFunctions.R")
 
 # load data
-setwd(path)
 print("Loading data")
 testWrist = read.csv(file.path(path,"featureData",wristDataPath))
 testHip = read.csv(file.path(path,"featureData",hipDataPath))
-trainWrist = loadTrainingData(wristTrainPath)
-trainHip = loadTrainingData(hipTrainPath)
+trainWrist = loadTrainingData(file.path(path,wristTrainPath))
+trainHip = loadTrainingData(file.path(path,hipTrainPath))
 
 # filter features to be used - default [ALL]
 filterTest = rep(TRUE, dim(testWrist)[2])
@@ -77,10 +83,14 @@ if (maxHipSQ < maxWristSQ) {
   cat("Wrist stream - kNN(", kNN_classifiers[match(maxWristSQ, testWristSQ)], ") performs the best - ", maxWristSQ, "\n")
   fit.knn <- knn(trainWrist[,!(names(trainWrist) %in% drops)], testWrist[,!(names(testWrist) %in% drops)], 
                  factor(trainWrist[,"activity"]), k = match(maxWristSQ, testWristSQ), prob=FALSE)
+  log = paste(wristDataPath, "wrist", kNN_classifiers[match(maxWristSQ, testWristSQ)], sep=",")
+  write(log, file=logPath, append=TRUE)
 } else {
   cat("Hip stream - kNN(", kNN_classifiers[match(maxHipSQ, testHipSQ)], ") performs the best - ", maxHipSQ, "\n")
   fit.knn <- knn(trainHip[,!(names(trainHip) %in% drops)], testHip[,!(names(testHip) %in% drops)], 
                  factor(trainHip[,"activity"]), k = match(maxHipSQ, testHipSQ), prob=FALSE)
+  log = paste(hipDataPath, "hip", kNN_classifiers[match(maxHipSQ, testHipSQ)], sep=",")
+  write(log, file=logPath, append=TRUE)
 }
 
 # predictions
@@ -91,17 +101,20 @@ dir.create(file.path(path, "kNN"), showWarnings = FALSE)
 
 # save the graph
 if (hipBetter) {
-  pdf(paste("kNN/", file_path_sans_ext(hipDataPath),"_class_features",(sum(filterTest)-2),".pdf",sep=""))
+  pdf(paste(path,"/kNN/", file_path_sans_ext(hipDataPath),"_class_features",(sum(filterTest)-2),".pdf",sep=""))
 } else {
-  pdf(paste("kNN/", file_path_sans_ext(wristDataPath),"_class_features",(sum(filterTest)-2),".pdf",sep=""))
+  pdf(paste(path,"/kNN/", file_path_sans_ext(wristDataPath),"_class_features",(sum(filterTest)-2),".pdf",sep=""))
 }
 # produce plots of given data with the best prediction
 par(mfrow=c(2,1))
-# TODO - nasty ylim constants - should really set it dynamically
-plot(testWrist$statSummary, xlab = "Time", ylab="Intensity", type="l", main="Wrist data")
+plot(testWrist$statSummary, xlab = "Time", ylab="Intensity", 
+     type="l", main="Wrist data", ylim=c(0.07,max(testWrist$statSummary)))
 points(x=1:length(pred),y=rep(0.07,length(pred)),col=pred, pch=16)
-plot(testHip$statSummary, xlab = "Time", ylab="Intensity", type="l", main="Hip data")
+legend("topright", c("Rest", "Light", "High"), cex=1, fill=1:3)
+plot(testHip$statSummary, xlab = "Time", ylab="Intensity", 
+     type="l", main="Hip data", ylim=c(0.07,max(testHip$statSummary)))
 points(x=1:length(pred),y=rep(0.07,length(pred)),col=pred, pch=16)
+legend("topright", c("Rest", "Light", "High"), cex=1, fill=1:3)
 dev.off()
 
 # save the result
@@ -110,9 +123,9 @@ outputWrist = data.frame(timestamp=testWrist$timestamp, activity=testWrist$activ
 outputHip = data.frame(timestamp=testHip$timestamp, activity=testHip$activity, prediction=pred-1)
 
 write.csv(outputWrist, 
-          paste("kNN/",file_path_sans_ext(wristDataPath),"features",sum(filterTest),"_prediction.csv",sep=""), 
+          paste(path,"/kNN/",file_path_sans_ext(wristDataPath),"_",sum(filterTest),"_prediction.csv",sep=""), 
           row.names=FALSE)
 
 write.csv(outputHip, 
-          paste("kNN/",file_path_sans_ext(hipDataPath),"_",sum(filterTest),"prediction.csv",sep=""), 
+          paste(path,"/kNN/",file_path_sans_ext(hipDataPath),"_",sum(filterTest),"prediction.csv",sep=""), 
           row.names=FALSE)
