@@ -1,8 +1,9 @@
 # feature extraction
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_runII"
-dataPath = "hip_all_testdata_withRest.csv"
+# path to a case study
+path = "TestCase"
+dataPath = "TestHip_annotated.csv"
 # size of the window (in seconds) for feature extraction
 SPLIT_INTERVAL=5
 # sampling frequency
@@ -13,12 +14,11 @@ SET_BOUNDARY=8
 TOP_FREQ = 15
 
 # load data
-setwd(path)
 print("Loading data")
 data = read.csv(file.path(path,"syncedData",dataPath))
 
 # load project specific libraries
-source("/home/pet5o/workspace/TDP/R/group-har/activityRecognitionFunctions.R")
+source("activityRecognitionFunctions.R")
 
 # calculate normalized euclidian distance and FFT
 # get ready for statistics summary calculation
@@ -116,5 +116,5 @@ dir.create(file.path(path, "featureData"), showWarnings = FALSE)
 
 # save to the disk
 write.csv(output, 
-          paste("featureData/", file_path_sans_ext(dataPath),"_features.csv",sep=""), 
+          paste(path, "/featureData/", file_path_sans_ext(dataPath),"_features.csv",sep=""), 
           row.names=FALSE)
