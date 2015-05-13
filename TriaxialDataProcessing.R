@@ -2,8 +2,8 @@
 require(GENEAread)
 
 # set to your own path
-# datapath = "C:/Users/localadmin/Documents/Projects/BBetter/TDP/officialTests/"
-datapath = "/home/pet5o/workspace/TDP/data/ThreeTrainingSets/data"
+datapath = "C:/Users/localadmin/Documents/Projects/BBetter/TDP/testingWednesday"
+# datapath = "/home/pet5o/workspace/TDP/data/ThreeTrainingSets/data"
 # datapath = "/home/pet5o/workspace/TDP/data/WednesdayData/data"
 # datapath = "/home/pet5o/workspace/TDP/data/15-03-23"
 
@@ -25,8 +25,8 @@ freeDataPeter="Peter_right wrist_015800_2015-03-23 10-20-36.bin"
 
 # calculate statistical summaries for every splitInterval
 # (manually input start and end index)
-data=read.bin(trainDataPeterWrist)
-dataSnippet=data$data.out[17190000:17460000,]
+data=read.bin(testRawaHip)
+dataSnippet=data$data.out[5953000:6032000,]
 
 # number of seconds for the output
 SPLIT_INTERVAL=5
