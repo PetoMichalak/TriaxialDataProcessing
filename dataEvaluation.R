@@ -7,7 +7,7 @@ library(ggplot2)
 # === modify to suit your needs
 # path to a case study
 path = "TestCase"
-dataPath = "kNN/TestHip_annotated_features_24prediction.csv"
+dataPath = "SVM/TestHip_annotated_features_234prediction.csv"
 # ===
 
 # load project specific libraries
