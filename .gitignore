@@ -1,5 +1,7 @@
+.Rhistory
 TestCase/syncedData/*
 TestCase/featureData/*
 TestCase/kNN/*
 TestCase/partialResult.log
 TestCase/partialResult_svm.log
+TestCase/SVM/*
