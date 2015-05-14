@@ -1,0 +1,39 @@
+# README
+
+## Introduction
+
+This is a set of R scripts which are used to process a triaxial streams for classification purposes. In this project we've looked at blocking activities such as carrying a suitcase or pushing a pram, which in usual approach mask the actual activity and decrease prediction accuracy. 
+
+## Example usage
+
+There is an example test data in TestCase folder, which can be used to play around with the scripts: TestHip.csv and TestWrist.csv. This represents a raw data without any manipulation except of extraction from binary format. There is also an annotation file included.
+
+Same folder also contains a set of training files with already extracted features (you're welcome). However testing data needs to use all of the blocks in the workflow to produce sensible results. Let's start!
+
+### Synchronise data streams
+
+synchroniseTriaxialStreams.R
+
+### Annotate the datastream
+
+streamAnnotation.R
+
+### Feature extraction
+
+featureExtraction.R
+
+### Classifiers: kNN, SVM, HMM
+
+kNN_twoStreams.R
+
+svm_twoStreams.R
+
+HMMfunction.R
+
+### Data evaluation
+
+dataEvaluation.R
+
+## Stream fragmentation
+
+There is also a set of enhanced scripts which use parallelization and stream fragmentation concepts in 'splitting' directory.

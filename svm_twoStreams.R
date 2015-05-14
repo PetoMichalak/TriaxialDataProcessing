@@ -63,7 +63,7 @@ trainWrist$activity = factor(trainWrist$activity)
 
 # find best cost and gamma parameters for SVM
 tuned.wrist <- tune.svm(activity ~ ., data = trainWrist[,-1],
-                        gamma = 10^(-6:-1), cost = 10^(-1:1)) 
+                        gamma = 10^(-10:10), cost = 10^(-3:3)) 
 
 # train model (ignoring timestamp)
 svm.model.wrist <- svm(activity ~ ., data = trainWrist[,-1], 
@@ -86,7 +86,7 @@ trainHip$activity = factor(trainHip$activity)
 
 # find best cost and gamma parameters for SVM
 tuned.hip <- tune.svm(activity ~ ., data = trainHip[,-1],
-                      gamma = 10^(-6:-1), cost = 10^(-1:1)) 
+                      gamma = 10^(-10:10), cost = 10^(-3:3)) 
 
 # train model (ignoring timestamp)
 svm.model.hip <- svm(activity ~ ., data = trainHip[,-1], 
@@ -119,7 +119,7 @@ if (testHipSQ < testWristSQ) {
 } else {
   pred <- as.numeric(svm.pred.hip)
   cat("Hip stream performs better; SQ: ", testHipSQ, "\n")
-  log = paste(wristDataPath, "wrist", tuned.hip$best.parameters[1,2], 
+  log = paste(hipDataPath, "hip", tuned.hip$best.parameters[1,2], 
               tuned.hip$best.parameters[1,1], sep=",")
   write(log, file=logPath, append=TRUE)
 }
