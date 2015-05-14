@@ -3,7 +3,7 @@
 require(tools)
 
 # === modify to suit your needs
-path = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_runII/fragmentedFeatureData_fft0"
+path = "/home/pet5o/workspace/TDP/DataEvaluation/_reportRun/SVM/featureData"
 # ===
 
 # load project specific libraries

@@ -3,7 +3,7 @@ require(tools)
 
 # load project specific libraries
 source("/home/pet5o/workspace/TDP/R/group-har/activityRecognitionFunctions.R")
-path="/home/pet5o/workspace/TDP/DataEvaluation/reportWriting/fragmentedFeatureData_fft1"
+path="/home/pet5o/workspace/TDP/DataEvaluation/_reportRun/kNN"
 # TRAINING DATA
 wristTrainPath = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_run/trainingSets/wrist"
 hipTrainPath = "/home/pet5o/workspace/TDP/DataEvaluation/final_dataset_run/trainingSets/hip"
@@ -144,7 +144,7 @@ kNN_twoStreams = function(wristDataPath, wristTrainPath, hipTrainPath, logPath) 
 }
 
 # lists all wrist data files which are paired up with hip files later in function
-filenames <- list.files(path, pattern="*WRIST*", full.names=TRUE)
+filenames <- list.files(file.path(path, "featureData"), pattern="*WRIST*", full.names=TRUE)
 
 require(class)
 require(parallel)
